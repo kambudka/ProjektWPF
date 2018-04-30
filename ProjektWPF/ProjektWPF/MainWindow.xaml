@@ -6,7 +6,181 @@
         xmlns:local="clr-namespace:ProjektWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <TabControl Margin="4" TabStripPlacement="Top">
+        <TabItem Header="Dodaj Paczke">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBox Margin="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"> Wyglad faktury albo coś innego</TextBox>
+                <GroupBox Name="Wymagane"  Margin="4" Header="Wymagane Dane" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
+                        <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
+                        <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
+                        <TextBox Margin="4" Grid.Row="0" Grid.Column="1"/>
+                        <TextBox Margin="4" Grid.Row="1" Grid.Column="1"/>
+                        <TextBox Margin="4" Grid.Row="2" Grid.Column="1"/>
+                    </Grid>
+                    
+                    
+                </GroupBox>
+                <GroupBox  Margin="4" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+                    <GroupBox.Header>
+                        <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
+                    </GroupBox.Header>
+                    <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label>Informacje dla kuriera</Label>
+                        <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
+                    </Grid>
+            </GroupBox>
+                <Button Margin="4" Grid.Column="1" Grid.Row="2">Anuluj</Button>
+                <Button Margin="4" Grid.Column="2" Grid.Row="2">Dodaj</Button>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Sprawdz status">
+            <Grid Margin="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Label>Numer Paczki</Label>
+                <TextBox Grid.Column="1" Name="ID" Margin="4"/>
+                <Button Grid.Column="2" Margin="4" Padding="16,4">Wyszukaj</Button>
+                <Label Grid.Row="1" Margin="4">Status</Label>
+                    <Label Grid.Row="2" Margin="4">Opis</Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" Margin="4"/>
+                <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Margin="4"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Spis i Aktualizacje">
+            <Grid Margin="3" Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <ToolBar Grid.ColumnSpan="3">
+                    <Label>Cena</Label>
+                    <TextBox MinWidth="50" Name="txtMinPrice"/>
+                    <Button >Filtruj</Button>
+                    <Button >Usuń Filtr</Button>
+                    <Separator/>
+                    <ComboBox SelectedIndex="0">
+                        <ComboBoxItem >Bez sortowania</ComboBoxItem>
+                        <ComboBoxItem >Sortuj wg tytułu</ComboBoxItem>
+                        <ComboBoxItem >Sortuj wg długości tytułu</ComboBoxItem>
+                    </ComboBox>
+                    <ComboBox >
+                        <ComboBoxItem >Bez grupowania</ComboBoxItem>
+                        <ComboBoxItem >Grupuj wg autora</ComboBoxItem>
+                        <ComboBoxItem >Grupuj wg ceny</ComboBoxItem>
+                    </ComboBox>
+                </ToolBar>
+                <ListBox Grid.Row="1" Name="lista" HorizontalContentAlignment="Stretch"
+                 ScrollViewer.CanContentScroll="False">
+                    <ListBox.GroupStyle>
+                    </ListBox.GroupStyle>
+                </ListBox>
+                <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
+                <Grid Grid.Row="1" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Margin="3">Status:</Label>
+                    <TextBox Grid.Column="1" Margin="3"> Skopiowalem z wykladu</TextBox>
+                    <Label Grid.Row="1" Margin="3">Adres:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3" />
+                    <Label Grid.Row="2" Margin="3">Cena:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" />
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" TextWrapping="Wrap" > I jakies inne dodatkowe informacje, niżej mogą być przyciski dodaj,aktualizuj czy coś takiego.</TextBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Drukuj">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Column="1" Grid.Row="0" Margin="4" TextWrapping="Wrap"> Drukowanie Pojedynczej faktury, tylko dostarczonych przesylek itp  </TextBox>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Ustawienia">
+            <Grid Margin="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0"> Widok </Label>
+                <Label Grid.Column="1" Grid.Row="0"> Preferencje </Label>
+                <Label Grid.Column="2" Grid.Row="0">Jakies inne pomysly</Label>
+                <ComboBox Grid.Column="0" Grid.Row="1" Margin="4"></ComboBox>
+                <GroupBox Header="Kolory" Grid.Column="0" Grid.Row="2" Margin="4">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Row="0">Niebieski</CheckBox>
+                        <CheckBox Grid.Row="1">Czarny</CheckBox>
+                        <CheckBox Grid.Row="2">ITP</CheckBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>
