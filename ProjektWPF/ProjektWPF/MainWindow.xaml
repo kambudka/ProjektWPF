@@ -5,91 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjektWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="400" Width="600">
+    <Window.Resources>
+        <local:CenaConverter x:Key="CenaConverter"/>
+        <local:StatusToImageConverter x:Key="StatusToImageConverter"/>
+        <DataTemplate x:Key="PaczkaDataTemplate">
+            <Border Margin="5" BorderThickness="1" BorderBrush="SteelBlue" CornerRadius="4">
+                <Grid Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding Path=Adres}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=Cena}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
     <TabControl Margin="4" TabStripPlacement="Top">
-        <TabItem Header="Dodaj Paczke">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBox Margin="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"> Wyglad faktury albo coś innego</TextBox>
-                <GroupBox Name="Wymagane"  Margin="4" Header="Wymagane Dane" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
-                        <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
-                        <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
-                        <TextBox Margin="4" Grid.Row="0" Grid.Column="1"/>
-                        <TextBox Margin="4" Grid.Row="1" Grid.Column="1"/>
-                        <TextBox Margin="4" Grid.Row="2" Grid.Column="1"/>
-                    </Grid>
-                    
-                    
-                </GroupBox>
-                <GroupBox  Margin="4" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
-                    <GroupBox.Header>
-                        <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
-                    </GroupBox.Header>
-                    <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label>Informacje dla kuriera</Label>
-                        <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
-                    </Grid>
-            </GroupBox>
-                <Button Margin="4" Grid.Column="1" Grid.Row="2">Anuluj</Button>
-                <Button Margin="4" Grid.Column="2" Grid.Row="2">Dodaj</Button>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Sprawdz status">
-            <Grid Margin="4">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Label>Numer Paczki</Label>
-                <TextBox Grid.Column="1" Name="ID" Margin="4"/>
-                <Button Grid.Column="2" Margin="4" Padding="16,4">Wyszukaj</Button>
-                <Label Grid.Row="1" Margin="4">Status</Label>
-                    <Label Grid.Row="2" Margin="4">Opis</Label>
-                    <TextBox Grid.Column="1" Grid.Row="1" Margin="4"/>
-                <TextBox Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Margin="4"/>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Spis i Aktualizacje">
+        <TabItem Header="Paczki">
             <Grid Margin="3" Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="4*"/>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
@@ -111,13 +56,16 @@
                     </ComboBox>
                 </ToolBar>
                 <ListBox Grid.Row="1" Name="lista" HorizontalContentAlignment="Stretch"
+                 ItemTemplate="{StaticResource PaczkaDataTemplate}"
                  ScrollViewer.CanContentScroll="False">
                     <ListBox.GroupStyle>
                     </ListBox.GroupStyle>
                 </ListBox>
-                <GridSplitter Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
-                <Grid Grid.Row="1" Grid.Column="2">
+                <GridSplitter Margin="4" Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
+                <Grid Grid.Row="1" Grid.Column="2"
+                      DataContext="{Binding ElementName=lista, Path=SelectedItem}">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -128,13 +76,91 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Label Margin="3">Status:</Label>
-                    <TextBox Grid.Column="1" Margin="3"> Skopiowalem z wykladu</TextBox>
-                    <Label Grid.Row="1" Margin="3">Adres:</Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3" />
+                    <TextBox Grid.Column="1" Margin="3" Text="{Binding Path=Status}"></TextBox>
+                    <Label Grid.Row="1" Margin="3" >Adres:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}" />
                     <Label Grid.Row="2" Margin="3">Cena:</Label>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" />
-                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" TextWrapping="Wrap" > I jakies inne dodatkowe informacje, niżej mogą być przyciski dodaj,aktualizuj czy coś takiego.</TextBox>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Cena, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
+                    <Label Grid.Row="3" Margin="3" >Numer:</Label>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" TextWrapping="Wrap" > I jakies inne dodatkowe informacje, niżej mogą być przyciski dodaj,aktualizuj czy coś takiego.</TextBox>
                 </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Dodaj Paczke">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBox Margin="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">Wyglad faktury albo coś innego</TextBox>
+                <GroupBox Name="Wymagane"  Margin="4" Header="Wymagane Dane" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
+                        <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
+                        <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
+                        <TextBox Margin="4" Grid.Row="0" Grid.Column="1"/>
+                        <TextBox Margin="4" Grid.Row="1" Grid.Column="1"/>
+                        <TextBox Margin="4" Grid.Row="2" Grid.Column="1"/>
+                    </Grid>
+
+
+                </GroupBox>
+                <GroupBox  Margin="4" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+                    <GroupBox.Header>
+                        <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
+                    </GroupBox.Header>
+                    <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Label>Informacje dla kuriera</Label>
+                        <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
+                    </Grid>
+                </GroupBox>
+                <Button Margin="4" Grid.Column="1" Grid.Row="2">Anuluj</Button>
+                <Button Margin="4" Grid.Column="2" Grid.Row="2">Dodaj</Button>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Status">
+            <Grid Margin="4" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Label>Numer Paczki</Label>
+                <TextBox Grid.Column="1" Name="ID" Margin="4"/>
+                <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click">Wyszukaj</Button>
+                <Label Grid.Row="1" Margin="4">Status</Label>
+                <Label Grid.Row="2" Margin="4">Opis</Label>
+                <TextBox Grid.Column="1" Grid.Row="1" Margin="4"/>
+                <Image Name="Obrazek" Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" Grid.RowSpan="2" MaxHeight="64"
+                            Source="{Binding Path=ImagePath, Converter={StaticResource StatusToImageConverter}}"/>
             </Grid>
         </TabItem>
         <TabItem Header="Drukuj">

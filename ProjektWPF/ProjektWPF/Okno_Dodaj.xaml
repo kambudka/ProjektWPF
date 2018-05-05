@@ -1,0 +1,35 @@
+﻿<Window x:Class="ProjektWPF.Okno_Dodaj"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjektWPF"
+        mc:Ignorable="d"
+        Title="Okno_Dodaj" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label Margin="3">Adres</Label>
+        <Label Margin="3" Grid.Row="1">Waga</Label>
+        <Label Margin="3" Grid.Row="2">Cena</Label>
+        <TextBox Margin="3" Grid.Column="1" Name="Adres"/>
+        <TextBox Margin="3" Grid.Column="1" Grid.Row="1" Name="Waga"/>
+        <TextBox Margin="3" Grid.Column="1" Grid.Row="2" Name="Cena"/>
+        <Grid HorizontalAlignment="Right" Grid.ColumnSpan="2" Grid.Row="3" Grid.IsSharedSizeScope="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="pierwsza" />
+                <ColumnDefinition SharedSizeGroup="pierwsza" />
+            </Grid.ColumnDefinitions>
+            <Button Margin="3" Padding="20, 5" IsDefault="True" Click="Ok_Click">Dodaj</Button>
+            <Button Margin="3" Padding="20, 5" IsCancel="True" Grid.Column="1" Click="Anuluj_Click">Anuluj</Button>
+        </Grid>
+    </Grid>
+</Window>
