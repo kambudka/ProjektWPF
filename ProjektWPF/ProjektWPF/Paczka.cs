@@ -14,7 +14,7 @@ namespace ProjektWPF
         {
             return Random.Next(3000) + 1000;
         }
-        public Paczka(decimal cena, string adres, int waga) //Konstruktor użytkowy, status i numer jest generowany
+        public Paczka(decimal cena, string adres, string waga) //Konstruktor użytkowy, status i numer jest generowany
         {
             Cena = cena;
             Adres = adres;
@@ -23,7 +23,7 @@ namespace ProjektWPF
             Numer = GenerateRandomNumber(); //Zostaje nadany Randomowy dla numer paczki
             ImagePath = Status + ".png";
         }
-        public Paczka(decimal cena, string adres, int waga,string status) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
+        public Paczka(decimal cena, string adres, string waga, string status) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
         {
             Cena = cena;
             Adres = adres;
@@ -36,8 +36,9 @@ namespace ProjektWPF
         public int Numer {get; set;}
         public decimal Cena { get; set; }
         public string Adres { get; set; }
-        public int Waga { get; set; }
+        public string Waga { get; set; }
         public string Status { get; set; }
+
         public string Error
         {
             get { return null; }
@@ -49,7 +50,7 @@ namespace ProjektWPF
             {
                 if (columnname == "Waga")
                 {
-                    if (Waga >= 5)
+                    if (Waga == "5 kg")
                         return "Waga nie moze być większa niż 5 kg.";
                 }
                 return null;

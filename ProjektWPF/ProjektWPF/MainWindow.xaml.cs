@@ -25,10 +25,10 @@ namespace ProjektWPF
         public MainWindow()
         {
             InitializeComponent();
-            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", 5,"W magazynie"));
-            paczka.Add(new Paczka(59.90M, "Wiejska 50", 3, "Wdrodze"));
-            paczka.Add(new Paczka(34.90M, "Wesoła 16", 2, "Dostarczona"));
-            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", 4, "Zwrócona"));
+            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg","W magazynie"));
+            paczka.Add(new Paczka(59.90M, "Wiejska 50", "3 kg", "Wdrodze"));
+            paczka.Add(new Paczka(34.90M, "Wesoła 16", "2 kg", "Dostarczona"));
+            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", "4 kg", "Zwrócona"));
 
 
             lista.ItemsSource = paczka;
@@ -47,7 +47,8 @@ namespace ProjektWPF
             Okno_Dodaj dialog = new Okno_Dodaj();
             if (dialog.ShowDialog() == true)
             {
-                lista.Items.Add(dialog.czlowiek);
+                paczka.Add(dialog.NowaPaczka);
+                View.Refresh();
             }
             else
             {

@@ -69,76 +69,33 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition />
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Margin="3">Status:</Label>
-                    <TextBox Grid.Column="1" Margin="3" Text="{Binding Path=Status}"></TextBox>
-                    <Label Grid.Row="1" Margin="3" >Adres:</Label>
-                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}" />
-                    <Label Grid.Row="2" Margin="3">Cena:</Label>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Cena, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
-                    <Label Grid.Row="3" Margin="3" >Numer:</Label>
-                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
-                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" TextWrapping="Wrap" > I jakies inne dodatkowe informacje, niżej mogą być przyciski dodaj,aktualizuj czy coś takiego.</TextBox>
+                    <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Row="5" Grid.Column="2" Margin="3"  Padding="10,3" Click="Dodaj_Click">Dodaj Paczke</Button>
+                        <Button Grid.Row="5" Grid.Column="1" Margin="3"  Padding="10,3" Name="Usun">Aktualizuj</Button>
+                        <Button Grid.Row="5" Grid.Column="0" Margin="3"  Padding="10,3" Name="Modyfikuj">Modyfikuj</Button>
+                    </Grid>
+                    <Label Grid.Row="1" Margin="3">Status:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Status}"></TextBox>
+                    <Label Grid.Row="2" Margin="3" >Adres:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}" />
+                    <Label Grid.Row="3" Margin="3">Cena:</Label>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Cena, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
+                    <Label Grid.Row="4" Margin="3" >Numer:</Label>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" TextWrapping="Wrap" >Na początku tych pól nie będzie widać. Po wybraniu Dodaj - Otwiera się nowe okienko. Po wybraniu Aktualizuj to na górze znika i pojawia się drop box z wyborem statusu do aktualizacji itp. o wyborze Modyfikuj pojawia się to co na górze tylko więcej.</TextBox>
                 </Grid>
-            </Grid>
-        </TabItem>
-        <TabItem Header="Dodaj Paczke">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBox Margin="4" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">Wyglad faktury albo coś innego</TextBox>
-                <GroupBox Name="Wymagane"  Margin="4" Header="Wymagane Dane" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
-                        <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
-                        <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
-                        <TextBox Margin="4" Grid.Row="0" Grid.Column="1"/>
-                        <TextBox Margin="4" Grid.Row="1" Grid.Column="1"/>
-                        <TextBox Margin="4" Grid.Row="2" Grid.Column="1"/>
-                    </Grid>
-
-
-                </GroupBox>
-                <GroupBox  Margin="4" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
-                    <GroupBox.Header>
-                        <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
-                    </GroupBox.Header>
-                    <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Label>Informacje dla kuriera</Label>
-                        <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
-                    </Grid>
-                </GroupBox>
-                <Button Margin="4" Grid.Column="1" Grid.Row="2">Anuluj</Button>
-                <Button Margin="4" Grid.Column="2" Grid.Row="2">Dodaj</Button>
             </Grid>
         </TabItem>
         <TabItem Header="Status">
@@ -158,9 +115,10 @@
                 <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click">Wyszukaj</Button>
                 <Label Grid.Row="1" Margin="4">Status</Label>
                 <Label Grid.Row="2" Margin="4">Opis</Label>
-                <TextBox Grid.Column="1" Grid.Row="1" Margin="4"/>
-                <Image Name="Obrazek" Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" Grid.RowSpan="2" MaxHeight="64"
-                            Source="{Binding Path=ImagePath, Converter={StaticResource StatusToImageConverter}}"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Margin="4" > Zamiast TextBoxaLabel z statusem paczki i innym kolorem</TextBox>
+                <TextBox Grid.Column="1" Grid.Row="2" Margin="4" >Może jakiś opis i poniżej własna grafika zależna od statusu</TextBox>
+                <!--<Image Name="Obrazek" Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" Grid.RowSpan="2" MaxHeight="64"
+                            Source="{Binding Path=ImagePath, Converter={StaticResource StatusToImageConverter}}"/>-->
             </Grid>
         </TabItem>
         <TabItem Header="Drukuj">

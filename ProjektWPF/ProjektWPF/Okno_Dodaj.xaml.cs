@@ -14,11 +14,9 @@ using System.Windows.Shapes;
 
 namespace ProjektWPF
 {
-    /// <summary>
-    /// Interaction logic for Okno_Dodaj.xaml
-    /// </summary>
     public partial class Okno_Dodaj : Window
     {
+
         public Okno_Dodaj()
         {
             InitializeComponent();
@@ -27,15 +25,13 @@ namespace ProjektWPF
         {
             Close();
         }
+        public Paczka NowaPaczka;
         private void Ok_Click(object sender, RoutedEventArgs e)
-        {
-            public Paczka NowaPaczka = new Paczka(46.90M, "Jurowiecka 31", 4, "Zwrócona");
-            NowaPaczka.Adres = Adres.Text;
-            NowaPaczka.Waga = Waga.Text;
-            NowaPaczka.Cena = Cena.Text;
+        { 
+            NowaPaczka = new Paczka(Decimal.Parse(Cena.Text), Adres.Text, Waga.Text);
             DialogResult = true;
             Close();
-            //  Close();
         }
+
     }
 }

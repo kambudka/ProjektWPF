@@ -7,29 +7,53 @@
         mc:Ignorable="d"
         Title="Okno_Dodaj" Height="300" Width="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
             <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Label Margin="3">Adres</Label>
-        <Label Margin="3" Grid.Row="1">Waga</Label>
-        <Label Margin="3" Grid.Row="2">Cena</Label>
-        <TextBox Margin="3" Grid.Column="1" Name="Adres"/>
-        <TextBox Margin="3" Grid.Column="1" Grid.Row="1" Name="Waga"/>
-        <TextBox Margin="3" Grid.Column="1" Grid.Row="2" Name="Cena"/>
-        <Grid HorizontalAlignment="Right" Grid.ColumnSpan="2" Grid.Row="3" Grid.IsSharedSizeScope="True">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition SharedSizeGroup="pierwsza" />
-                <ColumnDefinition SharedSizeGroup="pierwsza" />
-            </Grid.ColumnDefinitions>
-            <Button Margin="3" Padding="20, 5" IsDefault="True" Click="Ok_Click">Dodaj</Button>
-            <Button Margin="3" Padding="20, 5" IsCancel="True" Grid.Column="1" Click="Anuluj_Click">Anuluj</Button>
-        </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <GroupBox Name="Wymagane"  Margin="4" Header="Wymagane Dane" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
+                <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
+                <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
+                <TextBox Name="Adres" Margin="4" Grid.Row="0" Grid.Column="1"/>
+                <TextBox Name="Waga" Margin="4" Grid.Row="1" Grid.Column="1"/>
+                <TextBox Name="Cena" Margin="4" Grid.Row="2" Grid.Column="1"/>
+            </Grid>
+
+
+        </GroupBox>
+        <GroupBox  Margin="4" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+            <GroupBox.Header>
+                <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
+            </GroupBox.Header>
+            <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label>Informacje dla kuriera</Label>
+                <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
+            </Grid>
+        </GroupBox>
+        <Button Margin="4" Grid.Column="0" Grid.Row="2" Click="Anuluj_Click">Anuluj</Button>
+        <Button Margin="4" Grid.Column="1" Grid.Row="2" Click="Ok_Click">Dodaj</Button>
     </Grid>
 </Window>
