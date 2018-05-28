@@ -47,7 +47,7 @@
                     <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="2"/>
                     <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="2"/>
                 </Grid>
-                <Button Content="Log in" Command="{Binding LoginCommand, Mode=OneTime}"
+                <Button Content="Log in" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}"
             CommandParameter="{Binding ElementName=passwordBox}"
             HorizontalAlignment="Center" Margin="2"/>
                 <Button Content="Log out" Command="{Binding LogoutCommand, Mode=OneTime}"
