@@ -20,19 +20,37 @@ namespace ProjektWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    /// 
+    public interface IView
     {
-        public MainWindow()
+        IViewModel ViewModel
         {
+            get;
+            set;
+        }
+
+        void Show();
+    }
+    public partial class MainWindow : Window, IView
+    {
+        public MainWindow(AuthenticationViewModel viewModel)
+        {
+            ViewModel = viewModel;
             InitializeComponent();
-            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg","W magazynie"));
+            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg", "W magazynie"));
             paczka.Add(new Paczka(59.90M, "Wiejska 50", "3 kg", "Wdrodze"));
             paczka.Add(new Paczka(34.90M, "Wesoła 16", "2 kg", "Dostarczona"));
             paczka.Add(new Paczka(46.90M, "Jurowiecka 31", "4 kg", "Zwrócona"));
-
-
             lista.ItemsSource = paczka;
         }
+
+        #region IView Members
+        public IViewModel ViewModel
+        {
+            get { return DataContext as IViewModel; }
+            set { DataContext = value; }
+        }
+        #endregion
 
         private List<object> paczka = new List<object>();
         private ListCollectionView View

@@ -11,16 +11,30 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Security.Permissions;
 
 namespace ProjektWPF
 {
-    public partial class Okno_Dodaj : Window
+    [PrincipalPermission(SecurityAction.Demand, Role = "Administrators")]
+    public partial class Okno_Dodaj : Window, IView
     {
-
         public Okno_Dodaj()
         {
             InitializeComponent();
         }
+        #region IView Members
+        public IViewModel ViewModel
+        {
+            get
+            {
+                return DataContext as IViewModel;
+            }
+            set
+            {
+                DataContext = value;
+            }
+        }
+        #endregion
         private void Anuluj_Click(object sender, RoutedEventArgs e)
         {
             Close();

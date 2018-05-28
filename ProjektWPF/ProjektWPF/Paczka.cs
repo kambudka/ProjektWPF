@@ -38,6 +38,8 @@ namespace ProjektWPF
         public string Adres { get; set; }
         public string Waga { get; set; }
         public string Status { get; set; }
+        public string Imie { get; set; }
+        public string Nazwisko { get; set; }
 
         public string Error
         {

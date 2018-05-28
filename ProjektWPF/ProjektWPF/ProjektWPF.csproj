@@ -55,7 +55,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AnonymousIdentity.cs" />
+    <Compile Include="AuthentationService.cs" />
+    <Compile Include="AuthenticationViewModel.cs" />
     <Compile Include="CenaConverter.cs" />
+    <Compile Include="CustomIdentity.cs" />
+    <Compile Include="CustomPrincipal.cs" />
+    <Compile Include="DelegateCommand.cs" />
     <Compile Include="Okno_Dodaj.xaml.cs">
       <DependentUpon>Okno_Dodaj.xaml</DependentUpon>
     </Compile>

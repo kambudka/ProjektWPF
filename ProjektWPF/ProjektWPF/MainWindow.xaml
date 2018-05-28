@@ -9,6 +9,7 @@
     <Window.Resources>
         <local:CenaConverter x:Key="CenaConverter"/>
         <local:StatusToImageConverter x:Key="StatusToImageConverter"/>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
         <DataTemplate x:Key="PaczkaDataTemplate">
             <Border Margin="5" BorderThickness="1" BorderBrush="SteelBlue" CornerRadius="4">
                 <Grid Margin="3">
@@ -27,9 +28,40 @@
         </DataTemplate>
     </Window.Resources>
     <TabControl Margin="4" TabStripPlacement="Top">
-        <TabItem Header="Paczki">
+        <TabItem Header="Start">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+               FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"
+               Margin="2,2,2,2"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Login:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Hasło:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="2"/>
+                    <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="2"/>
+                </Grid>
+                <Button Content="Log in" Command="{Binding LoginCommand, Mode=OneTime}"
+            CommandParameter="{Binding ElementName=passwordBox}"
+            HorizontalAlignment="Center" Margin="2"/>
+                <Button Content="Log out" Command="{Binding LogoutCommand, Mode=OneTime}"
+            Visibility="{Binding IsAuthenticated}"
+            HorizontalAlignment="Center" Margin="2"/>
+                <TextBlock Text="{Binding Status}" Grid.Row="4" Grid.Column="1"
+               HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextWrapping="Wrap" />
+            </StackPanel>
+        </TabItem>
+
+        <TabItem Header="Paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="3" Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
@@ -55,14 +87,36 @@
                         <ComboBoxItem >Grupuj wg ceny</ComboBoxItem>
                     </ComboBox>
                 </ToolBar>
-                <ListBox Grid.Row="1" Name="lista" HorizontalContentAlignment="Stretch"
+                <ListBox Grid.Row="1" Grid.RowSpan="2" Name="lista" HorizontalContentAlignment="Stretch"
                  ItemTemplate="{StaticResource PaczkaDataTemplate}"
                  ScrollViewer.CanContentScroll="False">
                     <ListBox.GroupStyle>
                     </ListBox.GroupStyle>
                 </ListBox>
                 <GridSplitter Margin="4" Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
-                <Grid Grid.Row="1" Grid.Column="2"
+                
+                <Grid Grid.Row="1" Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button  Grid.Column="2" Margin="3"  Padding="10,3" 
+                             Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}"
+                             Command="{Binding ShowViewCommand}" CommandParameter="Admin"
+                             Content="Dodaj Paczke">
+                    </Button>
+                    <Button  Grid.Column="1" Margin="3"  Padding="10,3" Name="Usun"
+                             Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}"
+                             Content="Aktualizuj">
+                    </Button>
+                    <Button  Grid.Column="0" Margin="3"  Padding="10,3" Name="Modyfikuj"
+                                Content="Modyfikuj"
+                                Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+                    </Button>
+                </Grid>
+                
+                <Grid Grid.Row="2" Grid.Column="2"
                       DataContext="{Binding ElementName=lista, Path=SelectedItem}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -82,9 +136,6 @@
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Row="5" Grid.Column="2" Margin="3"  Padding="10,3" Click="Dodaj_Click">Dodaj Paczke</Button>
-                        <Button Grid.Row="5" Grid.Column="1" Margin="3"  Padding="10,3" Name="Usun">Aktualizuj</Button>
-                        <Button Grid.Row="5" Grid.Column="0" Margin="3"  Padding="10,3" Name="Modyfikuj">Modyfikuj</Button>
                     </Grid>
                     <Label Grid.Row="1" Margin="3">Status:</Label>
                     <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Status}"></TextBox>
@@ -94,11 +145,11 @@
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Cena, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
                     <Label Grid.Row="4" Margin="3" >Numer:</Label>
                     <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
-                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" TextWrapping="Wrap" >Na początku tych pól nie będzie widać. Po wybraniu Dodaj - Otwiera się nowe okienko. Po wybraniu Aktualizuj to na górze znika i pojawia się drop box z wyborem statusu do aktualizacji itp. o wyborze Modyfikuj pojawia się to co na górze tylko więcej.</TextBox>
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" TextWrapping="Wrap" ></TextBox>
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Status">
+        <TabItem Header="Status" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="4" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -121,7 +172,7 @@
                             Source="{Binding Path=ImagePath, Converter={StaticResource StatusToImageConverter}}"/>-->
             </Grid>
         </TabItem>
-        <TabItem Header="Drukuj">
+        <TabItem Header="Drukuj" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -134,7 +185,7 @@
                 <TextBox Grid.Column="1" Grid.Row="0" Margin="4" TextWrapping="Wrap"> Drukowanie Pojedynczej faktury, tylko dostarczonych przesylek itp  </TextBox>
             </Grid>
         </TabItem>
-        <TabItem Header="Ustawienia">
+        <TabItem Header="Ustawienia" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
