@@ -49,6 +49,17 @@ namespace ProjektWPF
             }
         }
 
+        public string AuthenticatedRole
+        {
+            get
+            {
+                if (IsAuthenticated)
+                    if (Thread.CurrentPrincipal.IsInRole("Administrators") == true) return "Administrator";
+                    else if (Thread.CurrentPrincipal.IsInRole("Kurier") == true) return "Kurier";
+                    else if (Thread.CurrentPrincipal.IsInRole("Ksiegowy") == true) return "Ksiegowy";
+                return "Nie jesteś Zalogowany!";
+            }
+        }
         public string Status
         {
             get { return _status; }
@@ -84,7 +95,11 @@ namespace ProjektWPF
 
                 //Update UI
                 NotifyPropertyChanged("AuthenticatedUser");
+                NotifyPropertyChanged("AuthenticatedRole");
                 NotifyPropertyChanged("IsAuthenticated");
+                NotifyPropertyChanged("IsAdmin");
+                NotifyPropertyChanged("IsKurier");
+                NotifyPropertyChanged("IsKsiegowy");
                 _loginCommand.RaiseCanExecuteChanged();
                 _logoutCommand.RaiseCanExecuteChanged();
                 Username = string.Empty; //reset
@@ -113,7 +128,11 @@ namespace ProjektWPF
             {
                 customPrincipal.Identity = new AnonymousIdentity();
                 NotifyPropertyChanged("AuthenticatedUser");
+                NotifyPropertyChanged("AuthenticatedRole");
                 NotifyPropertyChanged("IsAuthenticated");
+                NotifyPropertyChanged("IsAdmin");
+                NotifyPropertyChanged("IsKurier");
+                NotifyPropertyChanged("IsKsiegowy");
                 _loginCommand.RaiseCanExecuteChanged();
                 _logoutCommand.RaiseCanExecuteChanged();
                 Status = string.Empty;
@@ -128,6 +147,40 @@ namespace ProjektWPF
         public bool IsAuthenticated
         {
             get { return Thread.CurrentPrincipal.Identity.IsAuthenticated; }
+        }
+        public bool IsAdmin
+        {
+            get
+            {   if (IsAuthenticated)
+                    if (Thread.CurrentPrincipal.IsInRole("Administrators") == true)
+                        return true;
+                return false;
+            }
+
+        }
+        public bool IsKurier
+        {
+            get
+            {
+                if (IsAuthenticated)
+                    if (Thread.CurrentPrincipal.IsInRole("Kurier") == true)
+                        return true;
+                else if (Thread.CurrentPrincipal.IsInRole("Administrators") == true)
+                        return true;
+                return false;
+            }
+        }
+        public bool IsKsiegowy
+        {
+            get
+            {
+                if (IsAuthenticated)
+                    if (Thread.CurrentPrincipal.IsInRole("Ksiegowy") == true)
+                        return true;
+                    else if (Thread.CurrentPrincipal.IsInRole("Administrators") == true)
+                        return true;
+                return false;
+            }
         }
 
         private void ShowView(object parameter)
@@ -149,11 +202,10 @@ namespace ProjektWPF
         {
             try
             {
-                Status = string.Empty;
+                
             }
             catch (SecurityException)
             {
-                Status = "You are not authorized!";
             }
         }
 

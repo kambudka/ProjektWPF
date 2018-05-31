@@ -20,16 +20,15 @@ namespace ProjektWPF
             Adres = adres;
             Waga = waga;
             Status = "W magazynie"; //Po zatwierdzeniu paczki, składowana jest w magazynie
-            Numer = GenerateRandomNumber(); //Zostaje nadany Randomowy dla numer paczki
             ImagePath = Status + ".png";
         }
-        public Paczka(decimal cena, string adres, string waga, string status) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
+        public Paczka(decimal cena, string adres, string waga, string status, int numer) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
         {
             Cena = cena;
             Adres = adres;
             Waga = waga;
             Status = status; //Po zatwierdzeniu paczki, składowana jest w magazynie
-            Numer = GenerateRandomNumber(); //Zostaje nadany Randomowy dla numer paczki
+            Numer = numer; //Zostaje nadany Randomowy numer dla paczki
             ImagePath = Status + ".png";
         }
         public string ImagePath { get; set; }
@@ -40,6 +39,9 @@ namespace ProjektWPF
         public string Status { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
+        public string Kurier { get; set; }
+        public string Info { get; set; }
+
 
         public string Error
         {

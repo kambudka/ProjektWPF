@@ -29,11 +29,15 @@
         </DataTemplate>
     </Window.Resources>
     <TabControl Margin="4" TabStripPlacement="Top">
-        <TabItem Header="Start">
+        <TabItem Header="Konto">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!--<TextBlock Text="{Binding AuthenticatedRole}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+               FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"
+               Margin="2"/>-->
                 <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"
-               Margin="2,2,2,2"/>
+               Margin="2"/>
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -43,22 +47,21 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Login:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-                    <TextBlock Text="Hasło:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
                     <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="2"/>
                     <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="2"/>
                 </Grid>
-                <Button Content="Log in" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}"
+                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}"
             CommandParameter="{Binding ElementName=passwordBox}"
             HorizontalAlignment="Center" Margin="2"/>
-                <Button Content="Log out" Command="{Binding LogoutCommand, Mode=OneTime}"
+                <Button Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}"
             Visibility="{Binding IsAuthenticated}"
             HorizontalAlignment="Center" Margin="2"/>
                 <TextBlock Text="{Binding Status}" Grid.Row="4" Grid.Column="1"
                HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextWrapping="Wrap" />
             </StackPanel>
         </TabItem>
-
         <TabItem Header="Paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="3" Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
@@ -102,18 +105,18 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button  Grid.Column="2" Margin="3"  Padding="10,3" 
-                             Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}"
-                             Command="{Binding ShowViewCommand}" CommandParameter="Admin"
+                    <Button  Grid.Column="2" Margin="3"  Padding="10,3" Name="Dodaj_Paczke" Click="Dodaj_Click"
+                             Visibility="{Binding IsKsiegowy, Converter={StaticResource booleanToVisibilityConverter}}"
+                             Command="{Binding ShowView}" CommandParameter="Admin"
                              Content="Dodaj Paczke">
                     </Button>
-                    <Button  Grid.Column="1" Margin="3"  Padding="10,3" Name="Usun"
-                             Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}"
+                    <Button  Grid.Column="1" Margin="3"  Padding="10,3" Name="Aktualizuj"
+                             Visibility="{Binding IsKurier, Converter={StaticResource booleanToVisibilityConverter}}"
                              Content="Aktualizuj">
                     </Button>
                     <Button  Grid.Column="0" Margin="3"  Padding="10,3" Name="Modyfikuj"
                                 Content="Modyfikuj"
-                                Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+                                Visibility="{Binding IsKsiegowy, Converter={StaticResource booleanToVisibilityConverter}}">
                     </Button>
                 </Grid>
                 
@@ -150,7 +153,7 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Status" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem Header="Status">
             <Grid Margin="4" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -163,14 +166,11 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Label>Numer Paczki</Label>
-                <TextBox Grid.Column="1" Name="ID" Margin="4"/>
-                <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click">Wyszukaj</Button>
-                <Label Grid.Row="1" Margin="4">Status</Label>
-                <Label Grid.Row="2" Margin="4">Opis</Label>
-                <TextBox Grid.Column="1" Grid.Row="1" Margin="4" > Zamiast TextBoxaLabel z statusem paczki i innym kolorem</TextBox>
-                <TextBox Grid.Column="1" Grid.Row="2" Margin="4" >Może jakiś opis i poniżej własna grafika zależna od statusu</TextBox>
-                <!--<Image Name="Obrazek" Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" Grid.RowSpan="2" MaxHeight="64"
-                            Source="{Binding Path=ImagePath, Converter={StaticResource StatusToImageConverter}}"/>-->
+                <TextBox Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
+                <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False">Wyszukaj</Button>
+                <TextBlock Name="StatusPaczki" Grid.Column="1" Grid.Row="1" Margin="4" HorizontalAlignment="Center" FontFamily="Comic Sans MS" ></TextBlock>
+                <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0"  MaxHeight="64" Stretch="Uniform"
+                            Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/>
             </Grid>
         </TabItem>
         <TabItem Header="Drukuj" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
@@ -277,20 +277,33 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0"> Widok </Label>
                 <Label Grid.Column="1" Grid.Row="0"> Preferencje </Label>
-                <Label Grid.Column="2" Grid.Row="0">Jakies inne pomysly</Label>
-                <ComboBox Grid.Column="0" Grid.Row="1" Margin="4"></ComboBox>
-                <GroupBox Header="Kolory" Grid.Column="0" Grid.Row="2" Margin="4">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Row="0">Niebieski</CheckBox>
-                        <CheckBox Grid.Row="1">Czarny</CheckBox>
-                        <CheckBox Grid.Row="2">ITP</CheckBox>
-                    </Grid>
+                <!--<Label Grid.Column="2" Grid.Row="0">Jakies inne pomysly (Może)</Label>-->
+                <StackPanel Grid.Column="0" Grid.Row="1">
+                    <GroupBox Header="Kolory" Margin="4">
+                    <StackPanel>
+                    <CheckBox Grid.Row="0">Niebieski</CheckBox>
+                    <CheckBox Grid.Row="1">Czarny</CheckBox>
+                    </StackPanel>
                 </GroupBox>
+                    <ComboBox Margin="4">
+
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="1">
+                <GroupBox Header="Waga" Margin="4">
+                    <StackPanel>
+                        <CheckBox >Kilogramy - Kg</CheckBox>
+                        <CheckBox >Funt - Lbs</CheckBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Waluta" Margin="4">
+                    <StackPanel>
+                        <CheckBox >Zlote - PLN</CheckBox>
+                        <CheckBox >Euro - EU</CheckBox>
+                        <CheckBox >Dolary - USD</CheckBox>
+                    </StackPanel>
+                </GroupBox>
+                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>

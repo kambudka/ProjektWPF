@@ -44,10 +44,13 @@ namespace ProjektWPF
         {
             ViewModel = viewModel;
             InitializeComponent();
-            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg", "W magazynie"));
-            paczka.Add(new Paczka(59.90M, "Wiejska 50", "3 kg", "Wdrodze"));
-            paczka.Add(new Paczka(34.90M, "Wesoła 16", "2 kg", "Dostarczona"));
-            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", "4 kg", "Zwrócona"));
+            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg", "W magazynie", 5398));
+            paczka.Add(new Paczka(59.90M, "Wiejska 50", "3 kg", "W drodze", 6547));
+            paczka.Add(new Paczka(34.90M, "Wesoła 16", "2 kg", "Dostarczona", 3264));
+            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", "4 kg", "W magazynie",6742));
+            paczka.Add(new Paczka(46.90M, "Sienkiewicza 31", "7 kg", "W magazynie",3198));
+            paczka.Add(new Paczka(46.90M, "Lipowa 31", "4 kg", "W magazynie",2387));
+            paczka.Add(new Paczka(46.90M, "Pogodna 31", "4 kg", "W magazynie",3269));
             lista.ItemsSource = paczka;
 
             Drukarka.SelectedIndex = 0;
@@ -64,9 +67,11 @@ namespace ProjektWPF
             set { DataContext = value; }
         }
         #endregion
+
         int nr = 1;  // numer faktury
         private List<Paczka> paczka = new List<Paczka>();
         Paczka znalezionaPaczka;  // do wypelniania faktury
+        Paczka statusPaczka; //Do statusu
         int fakturaIloscPozycjiStalych = 0;  // do aktuaalizacji canvasa
 
         private ListCollectionView View
@@ -175,11 +180,22 @@ namespace ProjektWPF
             Faktura.Children.Add(calosc);
         }
 
+        private static readonly Random Random = new Random();
+        private static int GenerateRandomNumber()
+        {
+            return Random.Next(3000) + 1000;
+        }
+
         private void Dodaj_Click(object sender, RoutedEventArgs e)
         {
             Okno_Dodaj dialog = new Okno_Dodaj();
             if (dialog.ShowDialog() == true)
             {
+                do
+                {
+                    dialog.NowaPaczka.Numer = GenerateRandomNumber(); //Zostaje nadany Randomowy dla numer paczki
+
+                } while (paczka.Exists(element => element.Numer == dialog.NowaPaczka.Numer) == true);
                 paczka.Add(dialog.NowaPaczka);
                 View.Refresh();
             }
@@ -188,9 +204,39 @@ namespace ProjektWPF
             }
         }
 
+        private void Wyszukaj_TextChanged(object sender, RoutedEventArgs e)
+        {
+            string idpaczki;
+            idpaczki = ID.Text;
+            int temp;
+            Wyszukaj.IsEnabled = false;
+            //StatusPaczki.Text = "";
+ 
+            if (ID.Text.Length == 4)
+            {
+                bool cos = int.TryParse(ID.Text, out temp);
+                if (cos == true)
+                {
+                    statusPaczka = paczka.Find(element => element.Numer == temp);
+                    if (statusPaczka != null)
+                    {
+                        Wyszukaj.IsEnabled = true;
+                    }
+                }
+            }
+        }
         private void Wyszukaj_Click(object sender, RoutedEventArgs e)
         {
+            StatusPaczki.Text = statusPaczka.Status;
+            if (StatusPaczki.Text == "Dostarczona")
+                StatusPaczki.Foreground = System.Windows.Media.Brushes.DarkGreen;
+            else if(StatusPaczki.Text == "W drodze")
+                StatusPaczki.Foreground = System.Windows.Media.Brushes.Gold;
+            else if (StatusPaczki.Text == "W magazynie")
+                StatusPaczki.Foreground = System.Windows.Media.Brushes.Red;
 
+            StatusPaczki.FontSize = 50;
+            StatusPaczki.FontWeight = FontWeights.UltraBold;
         }
 
         private void Drukuj_Click(object sender, RoutedEventArgs e)

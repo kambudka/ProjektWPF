@@ -50,31 +50,24 @@ namespace ProjektWPF
 
         private static readonly List<InternalUserData> _users = new List<InternalUserData>()
         {
-            new InternalUserData("Mark", "mark@company.com",
-            "MB5PYIsbI2YzCUe34Q5ZU2VferIoI4Ttd+ydolWV0OE=", new string[] { "Administrators" }),
-            new InternalUserData("John", "john@company.com",
-            "hMaLizwzOQ5LeOnMuj+C6W75Zl5CXXYbwDSHWW9ZOXc=", new string[] { })
+            new InternalUserData("ksiegowy", "mark@company.com",
+            "ksiegowy", new string[] { "Ksiegowy" }),
+            new InternalUserData("kurier", "john@company.com",
+            "kurier", new string[] { "Kurier" }),
+            new InternalUserData("kurier2", "john@company.com",
+            "kurier", new string[] { "Kurier" }),
+            new InternalUserData("admin", "admin@company.com",
+            "admin", new string[] { "Administrators" })
         };
 
         public User AuthenticateUser(string username, string clearTextPassword)
         {
             InternalUserData userData = _users.FirstOrDefault(u => u.Username.Equals(username)
-                && u.HashedPassword.Equals(CalculateHash(clearTextPassword, u.Username)));
+                && u.HashedPassword.Equals(clearTextPassword));
             if (userData == null)
-                throw new UnauthorizedAccessException("Access denied. Please provide some valid credentials.");
+                throw new UnauthorizedAccessException("Złe hasło lub login");
 
             return new User(userData.Username, userData.Email, userData.Roles);
-        }
-
-        private string CalculateHash(string clearTextPassword, string salt)
-        {
-            // Convert the salted password to a byte array
-            byte[] saltedHashBytes = Encoding.UTF8.GetBytes(clearTextPassword + salt);
-            // Use the hash algorithm to calculate the hash
-            HashAlgorithm algorithm = new SHA256Managed();
-            byte[] hash = algorithm.ComputeHash(saltedHashBytes);
-            // Return the hash as a base64 encoded string to be compared to the stored password
-            return Convert.ToBase64String(hash);
         }
     }
 
