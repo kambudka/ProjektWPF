@@ -28,7 +28,7 @@ namespace ProjektWPF
             Adres = adres;
             Waga = waga;
             Status = status; //Po zatwierdzeniu paczki, składowana jest w magazynie
-            Numer = numer; //Zostaje nadany Randomowy numer dla paczki
+            Numer = numer; 
             ImagePath = Status + ".png";
         }
         public string ImagePath { get; set; }

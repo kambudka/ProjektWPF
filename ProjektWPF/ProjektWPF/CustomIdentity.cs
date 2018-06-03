@@ -8,13 +8,13 @@ using System.Security.Principal;
 
 namespace ProjektWPF
 { 
-    public class CustomIdentity : IIdentity
+    public class CustomIdentity : IIdentity //Identyfikator każdego użytkownika
     {
-        public CustomIdentity(string name, string email, string[] roles)
+        public CustomIdentity(string name, string email, string[] roles)    //KOnstruktor dla użytkownika
         {
             Name = name;
             Email = email;
-            Roles = roles;
+            Roles = roles;  //Rola uzytkownika w porgramie
         }
 
         public string Name { get; private set; }

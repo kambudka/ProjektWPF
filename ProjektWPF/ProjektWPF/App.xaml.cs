@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -15,17 +16,17 @@ namespace ProjektWPF
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-
-            //Create a custom principal with an anonymous identity at startup
+            //Utworzenie anonimowego użytkownika podczas startu aplikacji.
             CustomPrincipal customPrincipal = new CustomPrincipal();
             AppDomain.CurrentDomain.SetThreadPrincipal(customPrincipal);
 
             base.OnStartup(e);
 
-            //Show the login view
+            //Otworzenie głównego okna
             AuthenticationViewModel viewModel = new AuthenticationViewModel(new AuthenticationService());
             IView startWindow = new MainWindow(viewModel);
             startWindow.Show();
+
 
         }
     }

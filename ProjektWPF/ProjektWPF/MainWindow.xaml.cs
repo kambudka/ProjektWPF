@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Windows.Xps.Packaging;
 using System.IO;
 using System.Windows.Xps;
+using MahApps.Metro.Controls;
 
 namespace ProjektWPF
 {
@@ -27,6 +28,8 @@ namespace ProjektWPF
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
+
+    //IView Model
     public interface IView
     {
         IViewModel ViewModel
@@ -51,13 +54,16 @@ namespace ProjektWPF
             paczka.Add(new Paczka(46.90M, "Sienkiewicza 31", "7 kg", "W magazynie",3198));
             paczka.Add(new Paczka(46.90M, "Lipowa 31", "4 kg", "W magazynie",2387));
             paczka.Add(new Paczka(46.90M, "Pogodna 31", "4 kg", "W magazynie",3269));
-            lista.ItemsSource = paczka;
+            lista.ItemsSource = paczka; //Nadanie kilku początkowych paczek
 
             Drukarka.SelectedIndex = 0;
             KolorWydruku.Items.Add("Czarno-biały");
             KolorWydruku.Items.Add("Skala szarości");
             KolorWydruku.Items.Add("Kolorowy");
             KolorWydruku.SelectedIndex = 0;
+
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))   
+                return; //Bez tego gówna nie chce się kompilować bo niby nie widzi StatusToImage convertera który jakoś działa.
         }
 
         #region IView Members
@@ -68,11 +74,13 @@ namespace ProjektWPF
         }
         #endregion
 
-        int nr = 1;  // numer faktury
+        int nr = 1;  //Numer faktury
         private List<Paczka> paczka = new List<Paczka>();
-        Paczka znalezionaPaczka;  // do wypelniania faktury
+        Paczka znalezionaPaczka;  //Do wypelniania faktury
         Paczka statusPaczka; //Do statusu
-        int fakturaIloscPozycjiStalych = 0;  // do aktuaalizacji canvasa
+        private bool handle = true; //Do obsługi wyglądu.
+        int fakturaIloscPozycjiStalych = 0;  //Do aktualizacji Canvasa
+        private static readonly Random Random = new Random();   //Do nadawania numeru dla nowej paczki.
 
         private ListCollectionView View
         {
@@ -81,6 +89,8 @@ namespace ProjektWPF
                 return (ListCollectionView)CollectionViewSource.GetDefaultView(paczka);
             }
         }
+
+        //[Drukowanie] Funkcja generująca PDFa na podstawie Canvasa i danych z wybranej paczki.
         private void GenerujFakture()
         {
             if (fakturaIloscPozycjiStalych == 0) fakturaIloscPozycjiStalych = Faktura.Children.Count;  //pierwsze wejscie
@@ -180,12 +190,13 @@ namespace ProjektWPF
             Faktura.Children.Add(calosc);
         }
 
-        private static readonly Random Random = new Random();
+        //[Paczki] Generowanie randomowego numeru dla nowej paczki.
         private static int GenerateRandomNumber()
         {
             return Random.Next(3000) + 1000;
         }
 
+        //[Paczki] Obsługa zdarzenia Kliknięcia przycisku Dodaj Paczke. 
         private void Dodaj_Click(object sender, RoutedEventArgs e)
         {
             Okno_Dodaj dialog = new Okno_Dodaj();
@@ -195,7 +206,7 @@ namespace ProjektWPF
                 {
                     dialog.NowaPaczka.Numer = GenerateRandomNumber(); //Zostaje nadany Randomowy dla numer paczki
 
-                } while (paczka.Exists(element => element.Numer == dialog.NowaPaczka.Numer) == true);
+                } while (paczka.Exists(element => element.Numer == dialog.NowaPaczka.Numer) == true);   //Sprawdzanie czy daney numer już istnieje na liscie.
                 paczka.Add(dialog.NowaPaczka);
                 View.Refresh();
             }
@@ -204,27 +215,29 @@ namespace ProjektWPF
             }
         }
 
+        //[Status] Obsługa zdarzenia zmiany tekstu w TextBoxie.
         private void Wyszukaj_TextChanged(object sender, RoutedEventArgs e)
         {
             string idpaczki;
             idpaczki = ID.Text;
             int temp;
             Wyszukaj.IsEnabled = false;
-            //StatusPaczki.Text = "";
  
-            if (ID.Text.Length == 4)
+            if (ID.Text.Length == 4)    //Sprawdzenie poprawności długości wprowadzonego numeru.
             {
                 bool cos = int.TryParse(ID.Text, out temp);
                 if (cos == true)
                 {
                     statusPaczka = paczka.Find(element => element.Numer == temp);
-                    if (statusPaczka != null)
+                    if (statusPaczka != null)   //Jeżeli odnaleziono paczkę w liscie można kliknąć w wyszukaj przez co wyswietli się jej status.
                     {
                         Wyszukaj.IsEnabled = true;
                     }
                 }
             }
         }
+
+        //[Status] Obsuga zdarzenia klikniecia Button Wyszukaj.
         private void Wyszukaj_Click(object sender, RoutedEventArgs e)
         {
             StatusPaczki.Text = statusPaczka.Status;
@@ -239,6 +252,7 @@ namespace ProjektWPF
             StatusPaczki.FontWeight = FontWeights.UltraBold;
         }
 
+        //[Drukowanie] Osługa zdarzenia kliknięcia Button Drukuj.
         private void Drukuj_Click(object sender, RoutedEventArgs e)
         {
             PrintDialog pd = new PrintDialog();
@@ -277,6 +291,7 @@ namespace ProjektWPF
             Faktura.LayoutTransform = null;
         }
 
+        //[Drukowanie] Osługa zdarzenia zwiększenia liczby kopi faktury do wydrukowania.
         private void WiecejKopii_Click(object sender, RoutedEventArgs e)
         {
             int temp;
@@ -285,6 +300,7 @@ namespace ProjektWPF
             IloscKopii.Text = temp.ToString();
         }
 
+        //[Drukowanie] Osługa zdarzenia zmniejszenia liczby kopi faktury do wydrukowania.
         private void MniejKopii_Click(object sender, RoutedEventArgs e)
         {
             int temp;
@@ -293,6 +309,7 @@ namespace ProjektWPF
             IloscKopii.Text = temp.ToString();
         }
 
+        //[Drukowanie] Osługa zdarzenia zmiany text w TextBoxie wczytującego numer przesyłki.
         private void NumerPrzesylki_TextChanged(object sender, TextChangedEventArgs e)
         {
             int temp;
@@ -312,6 +329,69 @@ namespace ProjektWPF
             }
             
         }
-        
+
+        //Obsługa zdarzenia zmiany wartości w Comboboxie.
+        private void ComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if (handle) Handle();
+            handle = true;
+        }
+
+        //Obsługa zdarzenia zmiany wartości w Comboboxie.
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cmb = sender as ComboBox;
+            handle = !cmb.IsDropDownOpen;
+            Handle();
+        }
+
+        //Klasa potrzeba do wczytywania zasobów wykorzystywanych w stylach.
+        public class ThemeResourceDictionary : ResourceDictionary
+        {
+        }
+
+        //Funkcja dodająca źródła dla stylów Metro.
+        private void AddMetro() 
+        {
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) });
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml", UriKind.RelativeOrAbsolute) });
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml", UriKind.RelativeOrAbsolute) });
+            Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml", UriKind.RelativeOrAbsolute) });
+        }
+
+        //Obsługa Comboboxa z listą wzorów wyglądu.
+        private void Handle()
+        {
+            int ile = Application.Current.Resources.MergedDictionaries.Count;
+            switch (cmbThemes.SelectedIndex)
+            {
+                //Usuwanie wszystkich źródeł, przywracanie wyglądu standardowego.
+                case 0: 
+                    Application.Current.Resources.MergedDictionaries.Clear();
+                    break;
+                //Wczytanie wzoru Metro Light
+                case 1:
+                    if(ile == 0)
+                    {
+                        AddMetro();
+                        Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) });
+                    }
+                    else
+                    Application.Current.Resources.MergedDictionaries[4].Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute);
+                    break;
+                //Wczytanie wzoru Metro Dark
+                case 2:
+                    if (ile == 0)
+                    {
+                        AddMetro();
+                        Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute) });
+                    }
+                    else
+                        Application.Current.Resources.MergedDictionaries[4].Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml", UriKind.RelativeOrAbsolute);
+                    break;
+            }
+        }
+
+
     }
 }

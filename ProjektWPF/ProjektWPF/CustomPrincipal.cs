@@ -22,10 +22,6 @@ namespace ProjektWPF
         {
             get { return this.Identity; }
         }
-        public string[] WhatRole()
-        {
-            return _identity.Roles;
-        }
 
         public bool IsInRole(string role)
         {

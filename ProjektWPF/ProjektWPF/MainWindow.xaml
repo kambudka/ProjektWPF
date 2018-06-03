@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ProjektWPF"
         xmlns:Printing="clr-namespace:System.Drawing.Printing;assembly=System.Drawing"
         mc:Ignorable="d"
-        Title="MainWindow" Height="400" Width="600">
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" 
+        Title="Kurier" Height="400" Width="600">
     <Window.Resources>
         <local:CenaConverter x:Key="CenaConverter"/>
         <local:StatusToImageConverter x:Key="StatusToImageConverter"/>
@@ -30,15 +31,10 @@
     </Window.Resources>
     <TabControl Margin="4" TabStripPlacement="Top">
         <TabItem Header="Konto">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <!--<TextBlock Text="{Binding AuthenticatedRole}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-               FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"
-               Margin="2"/>-->
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
                 <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-               FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"
-               Margin="2"/>
-
-                <Grid>
+               FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"/>
+                <Grid Margin="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -47,15 +43,15 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right"/>
-                    <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right"/>
-                    <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="2"/>
-                    <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="2"/>
+                    <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
+                    <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
+                    <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
+                    <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="4"/>
                 </Grid>
-                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}"
+                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto"
             CommandParameter="{Binding ElementName=passwordBox}"
             HorizontalAlignment="Center" Margin="2"/>
-                <Button Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}"
+                <Button Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}" ToolTip="Wylogowanie z konta"
             Visibility="{Binding IsAuthenticated}"
             HorizontalAlignment="Center" Margin="2"/>
                 <TextBlock Text="{Binding Status}" Grid.Row="4" Grid.Column="1"
@@ -167,9 +163,9 @@
                 </Grid.ColumnDefinitions>
                 <Label>Numer Paczki</Label>
                 <TextBox Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
-                <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False">Wyszukaj</Button>
+                <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False" ToolTip="Status twojej paczki">Wyszukaj</Button>
                 <TextBlock Name="StatusPaczki" Grid.Column="1" Grid.Row="1" Margin="4" HorizontalAlignment="Center" FontFamily="Comic Sans MS" ></TextBlock>
-                <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0"  MaxHeight="64" Stretch="Uniform"
+                <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"
                             Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/>
             </Grid>
         </TabItem>
@@ -230,11 +226,14 @@
                 <Grid Grid.Column="1" Grid.Row="5">
                     <Button ToolTip="Drukowanie faktury, jeśli paczka o podanym numerze istnieje" Name="Drukuj" Margin="4" Click="Drukuj_Click" IsEnabled="False">Drukuj</Button>
                 </Grid>
-                <Grid Grid.Column="1" Grid.Row="1" Margin="5">
+                <Grid Grid.Column="1" Grid.Row="1" Margin="5" Style="{x:Null}">
                     <Border BorderThickness="1" BorderBrush="Black" Height="210" Width="150"></Border>
-                    <Canvas Name="Faktura" Margin="0" Background="White" Height="200" Width="140">
+                    <Canvas Name="Faktura" Margin="0" Background="White" Height="200" Width="140" >
+                        <Canvas.Resources>
+                            <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                        </Canvas.Resources>
                         <Label Canvas.Top="0"  FontSize="4" FontWeight="Bold" Content="KurierExpress" Foreground="Aquamarine"/>
-                        <Label Canvas.Top="10" FontSize="3" Content="Sprzedawca:"/>
+                        <Label Canvas.Top="10" FontSize="3" Content="Sprzedawca:" Style="{x:Null}"/>
                         <Label Canvas.Top="15" FontSize="3" Content="KurierExpress"/>
                         <Label Canvas.Top="20" FontSize="3" Content="ul. Wiejska 45A"/>
                         <Label Canvas.Top="25" FontSize="3" Content="15-351 Białystok"/>
@@ -276,18 +275,17 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.Row="0"> Widok </Label>
-                <Label Grid.Column="1" Grid.Row="0"> Preferencje </Label>
-                <!--<Label Grid.Column="2" Grid.Row="0">Jakies inne pomysly (Może)</Label>-->
+                <Label Grid.Column="1" Grid.Row="0">Preferencje</Label>
                 <StackPanel Grid.Column="0" Grid.Row="1">
-                    <GroupBox Header="Kolory" Margin="4">
-                    <StackPanel>
-                    <CheckBox Grid.Row="0">Niebieski</CheckBox>
-                    <CheckBox Grid.Row="1">Czarny</CheckBox>
-                    </StackPanel>
-                </GroupBox>
-                    <ComboBox Margin="4">
-
-                    </ComboBox>
+                    <GroupBox Header="Wygląd" Margin="4">
+                        <StackPanel>
+                            <ComboBox Margin="4" x:Name="cmbThemes" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" DropDownClosed="ComboBox_DropDownClosed" ToolTip="Lista dostępnych stylów okna">
+                                <ComboBoxItem Content="Standard" />
+                                <ComboBoxItem Content="Metro Light" Tag="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml"/>
+                                <ComboBoxItem Content="Metro Dark" Tag="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Grid.Row="1">
                 <GroupBox Header="Waga" Margin="4">

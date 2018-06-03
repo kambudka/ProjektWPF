@@ -14,20 +14,20 @@ namespace ProjektWPF
         private readonly DelegateCommand _loginCommand;
         private readonly DelegateCommand _logoutCommand;
         private readonly DelegateCommand _showViewCommand;
-        private readonly DelegateCommand _checkCommand;
         private string _username;
         private string _status;
 
+        //Tworzenie usługi autoryzującej dla ViewModelu
         public AuthenticationViewModel(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
             _loginCommand = new DelegateCommand(Login, CanLogin);
             _logoutCommand = new DelegateCommand(Logout, CanLogout);
             _showViewCommand = new DelegateCommand(ShowView, null);
-            _checkCommand = new DelegateCommand(Check, null);
             
         }
 
+        //Właściwości wykorzystane przy autoryzacji użytkowników. Takie jak nazwa/rola/status.
         #region Properties
         public string Username
         {
@@ -35,20 +35,20 @@ namespace ProjektWPF
             set { _username = value; NotifyPropertyChanged("Username"); }
         }
 
+        //Zwraca nazwę obecnie zalogowanego użytkownika
         public string AuthenticatedUser
         {
             get
             {
                 if (IsAuthenticated)
-                    return string.Format("Zalogowany jako {0}. {1}",
-                          Thread.CurrentPrincipal.Identity.Name,
-                          Thread.CurrentPrincipal.IsInRole("Administrators") ? "Administrator!"
-                              : "");
+                    return string.Format("Zalogowany jako {0}",
+                          Thread.CurrentPrincipal.Identity.Name);
 
                 return "Nie jesteś Zalogowany!";
             }
         }
 
+        //Zwraca jaką role posiada obecnie zalogowany użytkownik.
         public string AuthenticatedRole
         {
             get
@@ -60,6 +60,8 @@ namespace ProjektWPF
                 return "Nie jesteś Zalogowany!";
             }
         }
+
+        //String do zwracania wiadomości/błędów związanych z logowaniem.
         public string Status
         {
             get { return _status; }
@@ -67,33 +69,33 @@ namespace ProjektWPF
         }
         #endregion
 
+        // Commandsy wykorzystane przy logowaniu się użytkowików oraz sprawdzaniu dostępu do okna.
         #region Commands
         public DelegateCommand LoginCommand { get { return _loginCommand; } }
 
         public DelegateCommand LogoutCommand { get { return _logoutCommand; } }
 
         public DelegateCommand ShowViewCommand { get { return _showViewCommand; } }
-        public DelegateCommand CheckCommand { get { return _checkCommand; } }
         #endregion
 
+        //Obsługa logowania się użytkownika
         private void Login(object parameter)
         {
             PasswordBox passwordBox = parameter as PasswordBox;
             string clearTextPassword = passwordBox.Password;
             try
             {
-                //Validate credentials through the authentication service
+                //Sprawdzanie użytkownika
                 User user = _authenticationService.AuthenticateUser(Username, clearTextPassword);
 
-                //Get the current principal object
                 CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
                 if (customPrincipal == null)
                     throw new ArgumentException("The application's default thread principal must be set to a CustomPrincipal object on startup.");
 
-                //Authenticate the user
+                //Autoryzuj użytkownika
                 customPrincipal.Identity = new CustomIdentity(user.Username, user.Email, user.Roles);
 
-                //Update UI
+                //Powiadomienie o zmianie użytkownika
                 NotifyPropertyChanged("AuthenticatedUser");
                 NotifyPropertyChanged("AuthenticatedRole");
                 NotifyPropertyChanged("IsAuthenticated");
@@ -106,7 +108,7 @@ namespace ProjektWPF
                 passwordBox.Password = string.Empty; //reset
                 Status = string.Empty;
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException) //Złapanie wyjątku jeśli login i hasło nie pasują do siebie.
             {
                 Status = "Logowanie nie powiodlo się.";
             }
@@ -116,11 +118,13 @@ namespace ProjektWPF
             }
         }
 
+        //Sprawdza czy jest już ktoś zalogowany jeśli nie to udostępnia przycisk Logowania.
         private bool CanLogin(object parameter)
         {
             return !IsAuthenticated;
         }
 
+        //Po wylogowaniu zostaje przypisany anonimowy użytkownik oraz powiadomione wszystkie funkcjie o zmianie użytkownika.
         private void Logout(object parameter)
         {
             CustomPrincipal customPrincipal = Thread.CurrentPrincipal as CustomPrincipal;
@@ -139,15 +143,19 @@ namespace ProjektWPF
             }
         }
 
-        private bool CanLogout(object parameter)
+        //Zwraca true przez co wyswietla się przycisk wyloguj
+        private bool CanLogout(object parameter)    
         {
             return IsAuthenticated;
         }
 
-        public bool IsAuthenticated
+        //Zwraca true jeżeli jakikolwiek użytkownik jest zalogowany
+        public bool IsAuthenticated 
         {
             get { return Thread.CurrentPrincipal.Identity.IsAuthenticated; }
         }
+
+        //Sprawdza czy nasz użytkownik jest administratorem
         public bool IsAdmin
         {
             get
@@ -158,7 +166,9 @@ namespace ProjektWPF
             }
 
         }
-        public bool IsKurier
+
+        //Sprawdza czy nasz użytkownik jest kurierem
+        public bool IsKurier    
         {
             get
             {
@@ -170,7 +180,9 @@ namespace ProjektWPF
                 return false;
             }
         }
-        public bool IsKsiegowy
+
+        //Sprawdza czy nasz użytkownik jest ksiegowym
+        public bool IsKsiegowy  
         {
             get
             {
@@ -183,7 +195,8 @@ namespace ProjektWPF
             }
         }
 
-        private void ShowView(object parameter)
+        //Otwiera okno dodanai paczki, najpierw sprawdzając czy uztkownik ma uprawnienia.
+        private void ShowView(object parameter) 
         {
             try
             {
@@ -198,19 +211,9 @@ namespace ProjektWPF
             }
         }
 
-        private void Check(object parameter)
-        {
-            try
-            {
-                
-            }
-            catch (SecurityException)
-            {
-            }
-        }
-
+        //Powiadamia gdy wartoś została zmieniona
         #region INotifyPropertyChanged Members
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;   
 
         private void NotifyPropertyChanged(string propertyName)
         {
