@@ -39,35 +39,64 @@
         </DataTemplate>
     </Window.Resources>
     <TabControl Margin="4" TabStripPlacement="Top" SelectionChanged="TabControl_SelectionChanged">
-        <TabItem x:Name="TabKonto" Header="Konto">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
-                <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+        <TabItem x:Name="TabKonto" ToolTip="Panel logowania użytkownika" Header="Konto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
+                    <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"/>
-                <Grid Margin="4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
-                    <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
-                    <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
-                    <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="4"/>
-                </Grid>
-                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto" 
-            CommandParameter="{Binding ElementName=passwordBox}"
-            HorizontalAlignment="Center" Margin="2"/>
-                <Button Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}" ToolTip="Wylogowanie z konta"
-            Visibility="{Binding IsAuthenticated}"
-            HorizontalAlignment="Center" Margin="2"/>
-                <TextBlock Text="{Binding Status}" Grid.Row="4" Grid.Column="1"
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
+                        <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
+                        <TextBox ToolTip="Wprowadź swój login" Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
+                        <PasswordBox ToolTip="Wprowadź swoje hasło" x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="4"/>
+                    </Grid>
+                    <Button Name="Zaloguj" Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto" 
+                            CommandParameter="{Binding ElementName=passwordBox}" HorizontalAlignment="Center" Margin="2" Background="LightGray">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                                            FillBehavior="Stop" 
+                                                            Duration="0:0:1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Name="Wyloguj" Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}" ToolTip="Wylogowanie z konta"
+                            Visibility="{Binding IsAuthenticated}" HorizontalAlignment="Center" Margin="2" Background="LightGray">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                                        FillBehavior="Stop" 
+                                                        Duration="0:0:1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <TextBlock Text="{Binding Status}" Grid.Row="4" Grid.Column="1"
                HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextWrapping="Wrap" />
-            </StackPanel>
+                </StackPanel>
+            </Grid>
         </TabItem>
-        <TabItem x:Name="TabPaczki" Header="Paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabPaczki" Header="Paczki" ToolTip="Panel zarządzania paczkami" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="3" Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -165,7 +194,32 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem x:Name="TabStatus" Header="Status">
+        <TabItem x:Name="TabStatus" Header="Status" ToolTip="Panel sprawdzania statusu paczki">
+            <TabItem.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="3" />
+                    <Setter Property="Padding" Value="20,3"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform></RotateTransform>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="Button.Click">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.Angle" To="360" Duration="0:0:1" RepeatBehavior="0:0:3"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TabItem.Resources>
             <Grid Margin="4" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -174,17 +228,18 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
                 <Label>Numer Paczki</Label>
-                <TextBox Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
+                <TextBox ToolTip="Wprowadź numer paczki" Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
                 <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False" ToolTip="Status twojej paczki">Wyszukaj</Button>
                 <TextBlock Name="StatusPaczki" Grid.Column="1" Grid.Row="1" Margin="4" HorizontalAlignment="Center" FontFamily="Comic Sans MS" ></TextBlock>
-                <!-- <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"                            Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/> -->
+                <!-- <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"                           
+                Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/> -->
             </Grid>
         </TabItem>
-        <TabItem x:Name="TabDrukuj" Header="Drukuj" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabDrukuj" Header="Drukuj" ToolTip="Panel drukowania faktury konkretnej paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -275,7 +330,7 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem x:Name="TabUstawienia" Header="Ustawienia" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabUstawienia" Header="Ustawienia" ToolTip="Panel ustawień użytkownika, możliwość zmiany waluty itp." Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="17*"/>
