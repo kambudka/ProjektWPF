@@ -22,7 +22,7 @@ namespace ProjektWPF
             Wagaadd = 'k' + Waga.ToString();
             Cenaadd = "p" + Cena.ToString();
             Status = "W magazynie"; //Po zatwierdzeniu paczki, składowana jest w magazynie
-            ImagePath = Status + ".png";
+            ImagePath = Status + ".jpg";
         }
         public Paczka(decimal cena, string adres, decimal waga, string status, int numer, string kurier) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
         {
@@ -33,7 +33,7 @@ namespace ProjektWPF
             Wagaadd = 'k' + Waga.ToString();
             Status = status; //Po zatwierdzeniu paczki, składowana jest w magazynie
             Numer = numer; 
-            ImagePath = Status + ".png";
+            ImagePath = Status + ".jpg";
             Kurier = kurier;
         }
         public string ImagePath { get; set; }

@@ -66,8 +66,6 @@ namespace ProjektWPF
             KolorWydruku.Items.Add("Kolorowy");
             KolorWydruku.SelectedIndex = 0;
 
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))   
-                return; //Bez tego gówna nie chce się kompilować bo niby nie widzi StatusToImage convertera który jakoś działa.
         }
 
         #region IView Members

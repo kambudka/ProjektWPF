@@ -235,8 +235,8 @@
                 <TextBox ToolTip="Wprowadź numer paczki" Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
                 <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False" ToolTip="Status twojej paczki">Wyszukaj</Button>
                 <TextBlock Name="StatusPaczki" Grid.Column="1" Grid.Row="1" Margin="4" HorizontalAlignment="Center" FontFamily="Comic Sans MS" ></TextBlock>
-                <!-- <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"                           
-                Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/> -->
+                 <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"                           
+                Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/> 
             </Grid>
         </TabItem>
         <TabItem x:Name="TabDrukuj" Header="Drukuj" ToolTip="Panel drukowania faktury konkretnej paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">

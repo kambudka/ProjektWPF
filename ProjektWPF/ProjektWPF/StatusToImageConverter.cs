@@ -29,7 +29,7 @@ namespace ProjektWPF
         {
             try
             {
-                string imagePath = System.IO.Path.Combine(ImageDirectory, (string)value + ".png");
+                string imagePath = System.IO.Path.Combine(ImageDirectory, (string)value + ".jpg");
                 return new BitmapImage(new Uri(imagePath));
             }
             catch
