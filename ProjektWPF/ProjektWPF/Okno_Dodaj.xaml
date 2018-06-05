@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjektWPF"
         mc:Ignorable="d"
-        Title="Okno_Dodaj" Height="300" Width="300">
+        Title="Dodawanie paczki" Height="300" Width="300">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -30,16 +30,16 @@
                 <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
                 <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
                 <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
-                <TextBox Name="Adres" Margin="4" Grid.Row="0" Grid.Column="1"/>
-                <TextBox Name="Waga" Margin="4" Grid.Row="1" Grid.Column="1"/>
-                <TextBox Name="Cena" Margin="4" Grid.Row="2" Grid.Column="1"/>
+                <TextBox ToolTip="Wprowadź adres odbiorcy paczki" Name="Adres" Margin="4" Grid.Row="0" Grid.Column="1"/>
+                <TextBox ToolTip="Wprowadź wagę paczki" Name="Waga" Margin="4" Grid.Row="1" Grid.Column="1"/>
+                <TextBox ToolTip="Wprowadź cenę paczki" Name="Cena" Margin="4" Grid.Row="2" Grid.Column="1"/>
             </Grid>
 
 
         </GroupBox>
         <GroupBox  Margin="4" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
             <GroupBox.Header>
-                <CheckBox Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
+                <CheckBox ToolTip="Zaznacz, jeśli chcesz przekazać dodatkowe informacje dla kuriera" Name="Opcjonalne" Content="Opcjonalne" Margin="4" IsEnabled="True" IsChecked="False"/>
             </GroupBox.Header>
             <Grid IsEnabled="{Binding ElementName=Opcjonalne, Path=IsChecked}">
                 <Grid.ColumnDefinitions>
@@ -50,10 +50,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Label>Informacje dla kuriera</Label>
-                <TextBox Grid.Row="1" Grid.Column="0"></TextBox>
+                <TextBox ToolTip="Wprowadź treść informacji" Grid.Row="1" Grid.Column="0"></TextBox>
             </Grid>
         </GroupBox>
-        <Button Margin="4" Grid.Column="0" Grid.Row="2" Click="Anuluj_Click">Anuluj</Button>
-        <Button Margin="4" Grid.Column="1" Grid.Row="2" Click="Ok_Click">Dodaj</Button>
+        <Button ToolTip="Anuluj dodawanie paczki" Margin="4" Grid.Column="0" Grid.Row="2" Click="Anuluj_Click">Anuluj</Button>
+        <Button ToolTip="Dodaj paczkę do systemu" Margin="4" Grid.Column="1" Grid.Row="2" Click="Ok_Click">Dodaj</Button>
     </Grid>
 </Window>

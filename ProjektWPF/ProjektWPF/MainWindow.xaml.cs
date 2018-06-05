@@ -21,6 +21,8 @@ using System.Windows.Xps.Packaging;
 using System.IO;
 using System.Windows.Xps;
 using MahApps.Metro.Controls;
+using System.Threading;
+using System.Security;
 
 namespace ProjektWPF
 {
@@ -30,6 +32,7 @@ namespace ProjektWPF
     /// 
 
     //IView Model
+    
     public interface IView
     {
         IViewModel ViewModel
@@ -42,18 +45,19 @@ namespace ProjektWPF
     }
     public partial class MainWindow : Window, IView
     {
-       
+        
         public MainWindow(AuthenticationViewModel viewModel)
         {
             ViewModel = viewModel;
             InitializeComponent();
-            paczka.Add(new Paczka(49.90M, "Zwierzyniecka 8", "5 kg", "W magazynie", 5398));
-            paczka.Add(new Paczka(59.90M, "Wiejska 50", "3 kg", "W drodze", 6547));
-            paczka.Add(new Paczka(34.90M, "Wesoła 16", "2 kg", "Dostarczona", 3264));
-            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", "4 kg", "W magazynie",6742));
-            paczka.Add(new Paczka(46.90M, "Sienkiewicza 31", "7 kg", "W magazynie",3198));
-            paczka.Add(new Paczka(46.90M, "Lipowa 31", "4 kg", "W magazynie",2387));
-            paczka.Add(new Paczka(46.90M, "Pogodna 31", "4 kg", "W magazynie",3269));
+
+            paczka.Add(new Paczka(25.90M, "Zwierzyniecka 8", 5, "W magazynie", 5398,"kurier"));
+            paczka.Add(new Paczka(59.90M, "Wiejska 50", 3, "W drodze", 6547, "kurier"));
+            paczka.Add(new Paczka(34.90M, "Wesoła 16", 2, "Dostarczona", 3264, "kurier2"));
+            paczka.Add(new Paczka(46.90M, "Jurowiecka 31", 4, "W magazynie",6742, "kurier"));
+            paczka.Add(new Paczka(70.90M, "Sienkiewicza 31", 7, "W magazynie",3198, "kurier2"));
+            paczka.Add(new Paczka(80.90M, "Lipowa 31", 4, "W drodze",2387, "kurier2"));
+            paczka.Add(new Paczka(120.90M, "Pogodna 31", 4, "Dostarczona",3269, "kurier"));
             lista.ItemsSource = paczka; //Nadanie kilku początkowych paczek
 
             Drukarka.SelectedIndex = 0;
@@ -76,6 +80,7 @@ namespace ProjektWPF
 
         int nr = 1;  //Numer faktury
         private List<Paczka> paczka = new List<Paczka>();
+
         Paczka znalezionaPaczka;  //Do wypelniania faktury
         Paczka statusPaczka; //Do statusu
         private bool handle = true; //Do obsługi wyglądu.
@@ -393,5 +398,166 @@ namespace ProjektWPF
         }
 
 
+        private void WagaKg_Checked(object sender, RoutedEventArgs e)
+        {
+            int ile = paczka.Count;
+            for(int i=0;i<ile;i++)
+            {
+                if(paczka[i].Wagaadd[0]=='l')
+                {
+                    double a = Convert.ToDouble(paczka[i].Waga);
+                    a *= 0.45359237;
+                    paczka[i].Waga = Convert.ToDecimal(a);
+                    paczka[i].Wagaadd = 'k' + paczka[i].Waga.ToString();
+                }
+            }
+        
+        }
+        private void WagaLbs_Checked(object sender, RoutedEventArgs e)
+        {
+            int ile = paczka.Count;
+            for (int i = 0; i < ile; i++)
+            {
+                if (paczka[i].Wagaadd[0] == 'k')
+                {
+                    double a = Convert.ToDouble(paczka[i].Waga);
+                    a *= 2.20462262;
+                    paczka[i].Waga = Convert.ToDecimal(a);
+                    paczka[i].Wagaadd = 'l' + paczka[i].Waga.ToString();
+                }
+            }
+
+        }
+        private void WalutaPLN_Checked(object sender, RoutedEventArgs e)
+        {
+            int ile = paczka.Count;
+            for (int i = 0; i < ile; i++)
+            {
+                if (paczka[i].Cenaadd[0] == 'e')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 4.27161738;
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "p" + paczka[i].Cena.ToString();
+                }
+                else if (paczka[i].Cenaadd[0] == 'u')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 3.65204752;
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "p" + paczka[i].Cena.ToString();
+                }
+                
+            }         
+
+        }
+        private void WalutaEU_Checked(object sender, RoutedEventArgs e)
+        {
+            int ile = paczka.Count;
+            for (int i = 0; i < ile; i++)
+            {
+                if (paczka[i].Cenaadd[0] == 'p')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 0.234103364;                    
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "e" + paczka[i].Cena.ToString();
+                }
+                else if (paczka[i].Cenaadd[0] == 'u')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 0.854956611;                    
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "e" + paczka[i].Cena.ToString();
+                }
+
+            }
+        }
+        private void WalutaUSD_Checked(object sender, RoutedEventArgs e)
+        {
+            int ile = paczka.Count;
+            for (int i = 0; i < ile; i++)
+            {
+                if (paczka[i].Cenaadd[0] == 'p')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 0.273819;
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "u" + paczka[i].Cena.ToString();
+                }
+                else if (paczka[i].Cenaadd[0] == 'e')
+                {
+                    double a = Convert.ToDouble(paczka[i].Cena);
+                    a *= 1.16965;
+                    paczka[i].Cena = Convert.ToDecimal(a);
+                    paczka[i].Cenaadd = "u" + paczka[i].Cena.ToString();
+                }      
+
+            }
+        }
+
+        //[Paczki] Funkcje grupujące.
+        private void GroupCena(object sender, RoutedEventArgs e)
+        {
+            View.GroupDescriptions.Clear();
+            View.SortDescriptions.Add(new SortDescription("Cena", ListSortDirection.Ascending));
+            PriceRangeProductGrouper grouper = new PriceRangeProductGrouper();
+            grouper.GroupInterval = 20;
+            View.GroupDescriptions.Add(new PropertyGroupDescription("Cena", grouper));
+        }
+        private void GroupStatus(object sender, RoutedEventArgs e)
+        {
+            View.GroupDescriptions.Clear();
+            View.GroupDescriptions.Add(new PropertyGroupDescription("Status"));
+        }
+        private void GroupNone(object sender, RoutedEventArgs e)
+        {
+            View.GroupDescriptions.Clear();
+        }
+
+        //[Paczki] Funkcje filtrujące.
+
+        private void SortujKuriera()
+        {
+            if (Thread.CurrentPrincipal.IsInRole("Kurier") == true)
+            {
+                View.Filter = delegate (object item)
+                {
+                    Paczka product = item as Paczka;
+                    if (product != null)
+                    {
+                        return (product.Kurier == Thread.CurrentPrincipal.Identity.Name);
+                    }
+                    return false;
+                };
+            }
+            else View.Filter = null;
+        }
+        private void Filter(object sender, RoutedEventArgs e)
+        {
+            decimal minimumPrice;
+            if (Decimal.TryParse(txtMinPrice.Text, out minimumPrice))
+            {
+                View.Filter = delegate (object item)
+                {
+                    Paczka product = item as Paczka;
+                    if (product != null)
+                    {
+                        return (product.Cena > minimumPrice);
+                    }
+                    return false;
+                };
+            }
+        }
+        private void FilterNone(object sender, RoutedEventArgs e)
+        {
+            SortujKuriera();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TabPaczki.IsSelected)
+                SortujKuriera();
+        }
     }
 }

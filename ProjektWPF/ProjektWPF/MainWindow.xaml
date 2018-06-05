@@ -1,4 +1,6 @@
 ﻿<Window x:Class="ProjektWPF.MainWindow"
+        xmlns:sysglb="clr-namespace:System.Globalization;assembly=mscorlib"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +11,9 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" 
         Title="Kurier" Height="400" Width="600">
     <Window.Resources>
+
         <local:CenaConverter x:Key="CenaConverter"/>
+        <local:WagaConverter x:Key="WagaConverter"/>
         <local:StatusToImageConverter x:Key="StatusToImageConverter"/>
         <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
         <DataTemplate x:Key="PaczkaDataTemplate">
@@ -28,9 +32,14 @@
                 </Grid>
             </Border>
         </DataTemplate>
+        <DataTemplate x:Key="GroupTemplate">
+            <TextBlock Text="{Binding Path=Name}"
+                        FontWeight="Bold" Foreground="White" Background="DodgerBlue"
+                        Margin="0,5,0,0" Padding="3"/>
+        </DataTemplate>
     </Window.Resources>
-    <TabControl Margin="4" TabStripPlacement="Top">
-        <TabItem Header="Konto">
+    <TabControl Margin="4" TabStripPlacement="Top" SelectionChanged="TabControl_SelectionChanged">
+        <TabItem x:Name="TabKonto" Header="Konto">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
                 <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"/>
@@ -48,7 +57,7 @@
                     <TextBox Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
                     <PasswordBox x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="4"/>
                 </Grid>
-                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto"
+                <Button Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto" 
             CommandParameter="{Binding ElementName=passwordBox}"
             HorizontalAlignment="Center" Margin="2"/>
                 <Button Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}" ToolTip="Wylogowanie z konta"
@@ -58,7 +67,7 @@
                HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" TextWrapping="Wrap" />
             </StackPanel>
         </TabItem>
-        <TabItem Header="Paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabPaczki" Header="Paczki" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="3" Grid.IsSharedSizeScope="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -66,36 +75,39 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="88*"/>
+                    <ColumnDefinition Width="192*"/>
                     <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="279*"/>
                 </Grid.ColumnDefinitions>
-                <ToolBar Grid.ColumnSpan="3">
+                <ToolBar Grid.ColumnSpan="4">
                     <Label>Cena</Label>
                     <TextBox MinWidth="50" Name="txtMinPrice"/>
-                    <Button >Filtruj</Button>
-                    <Button >Usuń Filtr</Button>
+                    <Button Click="Filter" >Filtruj</Button>
+                    <Button Click="FilterNone">Usuń Filtr</Button>
                     <Separator/>
                     <ComboBox SelectedIndex="0">
                         <ComboBoxItem >Bez sortowania</ComboBoxItem>
-                        <ComboBoxItem >Sortuj wg tytułu</ComboBoxItem>
-                        <ComboBoxItem >Sortuj wg długości tytułu</ComboBoxItem>
+                        <ComboBoxItem >Sortuj wg adresu</ComboBoxItem>
+                        <ComboBoxItem >Sortuj wg Nazwiska</ComboBoxItem>
                     </ComboBox>
-                    <ComboBox >
-                        <ComboBoxItem >Bez grupowania</ComboBoxItem>
-                        <ComboBoxItem >Grupuj wg autora</ComboBoxItem>
-                        <ComboBoxItem >Grupuj wg ceny</ComboBoxItem>
+                    <ComboBox SelectedIndex="0">
+                        <ComboBoxItem Selected="GroupNone" >Bez grupowania</ComboBoxItem>
+                        <ComboBoxItem Selected="GroupStatus">Grupuj wg Statusu</ComboBoxItem>
+                        <ComboBoxItem Selected="GroupCena">Grupuj wg ceny</ComboBoxItem>
                     </ComboBox>
                 </ToolBar>
                 <ListBox Grid.Row="1" Grid.RowSpan="2" Name="lista" HorizontalContentAlignment="Stretch"
                  ItemTemplate="{StaticResource PaczkaDataTemplate}"
-                 ScrollViewer.CanContentScroll="False">
+                         
+                 ScrollViewer.CanContentScroll="False" Grid.ColumnSpan="2">
                     <ListBox.GroupStyle>
+                        <GroupStyle HeaderTemplate="{StaticResource GroupTemplate}"/>
                     </ListBox.GroupStyle>
                 </ListBox>
-                <GridSplitter Margin="4" Grid.Row="1" Grid.Column="1" Width="5" HorizontalAlignment="Center"/>
-                
-                <Grid Grid.Row="1" Grid.Column="2">
+                <GridSplitter Margin="4" Grid.Row="1" Grid.Column="2" Width="5" HorizontalAlignment="Center"/>
+
+                <Grid Grid.Row="1" Grid.Column="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
@@ -115,10 +127,11 @@
                                 Visibility="{Binding IsKsiegowy, Converter={StaticResource booleanToVisibilityConverter}}">
                     </Button>
                 </Grid>
-                
-                <Grid Grid.Row="2" Grid.Column="2"
+
+                <Grid Grid.Row="2" Grid.Column="3"
                       DataContext="{Binding ElementName=lista, Path=SelectedItem}">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
@@ -142,14 +155,17 @@
                     <Label Grid.Row="2" Margin="3" >Adres:</Label>
                     <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}" />
                     <Label Grid.Row="3" Margin="3">Cena:</Label>
-                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Cena, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
-                    <Label Grid.Row="4" Margin="3" >Numer:</Label>
-                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
-                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" TextWrapping="Wrap" ></TextBox>
+                    <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Cenaadd, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
+                    <Label Grid.Row="4" Margin="3" >Waga:</Label>
+                    <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=Wagaadd, ValidatesOnDataErrors=True, Converter={StaticResource WagaConverter}}" />
+                    <Label Grid.Row="5" Margin="3" >Numer:</Label>
+                    <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
+                    <TextBox Grid.Row="6" Grid.Column="1" Margin="3" TextWrapping="Wrap" ></TextBox>
+
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Status">
+        <TabItem x:Name="TabStatus" Header="Status">
             <Grid Margin="4" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -165,11 +181,10 @@
                 <TextBox Grid.Column="1" Name="ID" Margin="4" TextChanged="Wyszukaj_TextChanged"/>
                 <Button Grid.Column="2" Margin="4" Padding="16,4" Click="Wyszukaj_Click" Name="Wyszukaj" IsEnabled="False" ToolTip="Status twojej paczki">Wyszukaj</Button>
                 <TextBlock Name="StatusPaczki" Grid.Column="1" Grid.Row="1" Margin="4" HorizontalAlignment="Center" FontFamily="Comic Sans MS" ></TextBlock>
-                <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"
-                            Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/>
+                <!-- <Image Grid.Column="1" Grid.Row="2" Margin="0,0,5,0" RenderOptions.BitmapScalingMode="HighQuality" MaxHeight="250"                            Source="{Binding ElementName=StatusPaczki, Path=Text, Converter={StaticResource StatusToImageConverter}}"/> -->
             </Grid>
         </TabItem>
-        <TabItem Header="Drukuj" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabDrukuj" Header="Drukuj" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -260,12 +275,13 @@
                 </Grid>
             </Grid>
         </TabItem>
-        <TabItem Header="Ustawienia" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
+        <TabItem x:Name="TabUstawienia" Header="Ustawienia" Visibility="{Binding IsAuthenticated, Converter={StaticResource booleanToVisibilityConverter}}">
             <Grid Margin="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="17*"/>
+                    <ColumnDefinition Width="173*"/>
+                    <ColumnDefinition Width="190*"/>
+                    <ColumnDefinition Width="190*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -274,9 +290,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0"> Widok </Label>
-                <Label Grid.Column="1" Grid.Row="0">Preferencje</Label>
-                <StackPanel Grid.Column="0" Grid.Row="1">
+                <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">Widok</Label>
+                <Label Grid.Column="2" Grid.Row="0">Preferencje</Label>
+                <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
                     <GroupBox Header="Wygląd" Margin="4">
                         <StackPanel>
                             <ComboBox Margin="4" x:Name="cmbThemes" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged" DropDownClosed="ComboBox_DropDownClosed" ToolTip="Lista dostępnych stylów okna">
@@ -287,21 +303,24 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-                <StackPanel Grid.Column="1" Grid.Row="1">
-                <GroupBox Header="Waga" Margin="4">
-                    <StackPanel>
-                        <CheckBox >Kilogramy - Kg</CheckBox>
-                        <CheckBox >Funt - Lbs</CheckBox>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Header="Waluta" Margin="4">
-                    <StackPanel>
-                        <CheckBox >Zlote - PLN</CheckBox>
-                        <CheckBox >Euro - EU</CheckBox>
-                        <CheckBox >Dolary - USD</CheckBox>
-                    </StackPanel>
-                </GroupBox>
+                <StackPanel Grid.Column="2" Grid.Row="1">
+                    <GroupBox Header="Waga" Margin="4">
+                        <StackPanel>
+                            <RadioButton Name="WagaKg" IsChecked="True" Checked="WagaKg_Checked" >Kilogramy - Kg</RadioButton>
+                            <RadioButton Name="WagaLbs" Checked="WagaLbs_Checked" >Funt - Lbs</RadioButton>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Header="Waluta" Margin="4">
+                        <StackPanel>
+                            <RadioButton Name="WalutaPLN"  IsChecked="True" Checked="WalutaPLN_Checked">Zlote - PLN</RadioButton>
+                            <RadioButton Name="WalutaEU"  Checked="WalutaEU_Checked">Euro - EU</RadioButton>
+                            <!-- IsChecked="{Binding ElementName=HackyBindedKey, Path=Content, Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" -->
+                            <RadioButton Name="WalutaUSD"   Checked="WalutaUSD_Checked">Dolary - USD</RadioButton>
+                        </StackPanel>
+                    </GroupBox>
                 </StackPanel>
+
+
             </Grid>
         </TabItem>
     </TabControl>

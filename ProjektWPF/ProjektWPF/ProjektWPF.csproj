@@ -81,9 +81,11 @@
     <Compile Include="Okno_Dodaj.xaml.cs">
       <DependentUpon>Okno_Dodaj.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PriceRangeGrouper.cs" />
     <Compile Include="StatusToBorderConverter.cs" />
     <Compile Include="StatusToFontConvertercs.cs" />
     <Compile Include="StatusToImageConverter.cs" />
+    <Compile Include="WagaConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -42,7 +42,7 @@ namespace ProjektWPF
         public Paczka NowaPaczka;
         private void Ok_Click(object sender, RoutedEventArgs e)
         { 
-            NowaPaczka = new Paczka(Decimal.Parse(Cena.Text), Adres.Text, Waga.Text);
+            NowaPaczka = new Paczka(Decimal.Parse(Cena.Text), Adres.Text, Decimal.Parse(Waga.Text));
             DialogResult = true;
             Close();
         }

@@ -14,33 +14,40 @@ namespace ProjektWPF
         {
             return Random.Next(3000) + 1000;
         }
-        public Paczka(decimal cena, string adres, string waga) //Konstruktor użytkowy, status i numer jest generowany
+        public Paczka(decimal cena, string adres, decimal waga) //Konstruktor użytkowy, status i numer jest generowany
         {
             Cena = cena;
             Adres = adres;
             Waga = waga;
+            Wagaadd = 'k' + Waga.ToString();
+            Cenaadd = "p" + Cena.ToString();
             Status = "W magazynie"; //Po zatwierdzeniu paczki, składowana jest w magazynie
             ImagePath = Status + ".png";
         }
-        public Paczka(decimal cena, string adres, string waga, string status, int numer) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
+        public Paczka(decimal cena, string adres, decimal waga, string status, int numer, string kurier) //Konstruktor do przypisywania wszystkiego ręcznie(oprócz numeru)
         {
             Cena = cena;
+            Cenaadd = "p" + Cena.ToString();
             Adres = adres;
             Waga = waga;
+            Wagaadd = 'k' + Waga.ToString();
             Status = status; //Po zatwierdzeniu paczki, składowana jest w magazynie
             Numer = numer; 
             ImagePath = Status + ".png";
+            Kurier = kurier;
         }
         public string ImagePath { get; set; }
         public int Numer {get; set;}
         public decimal Cena { get; set; }
         public string Adres { get; set; }
-        public string Waga { get; set; }
+        public decimal Waga { get; set; }
         public string Status { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
         public string Kurier { get; set; }
         public string Info { get; set; }
+        public string Cenaadd { get; set; }
+        public string Wagaadd { get; set; }
 
 
         public string Error
@@ -54,7 +61,7 @@ namespace ProjektWPF
             {
                 if (columnname == "Waga")
                 {
-                    if (Waga == "5 kg")
+                    if (Waga == 5)
                         return "Waga nie moze być większa niż 5 kg.";
                 }
                 return null;
