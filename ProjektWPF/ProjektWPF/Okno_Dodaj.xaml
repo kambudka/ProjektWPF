@@ -26,13 +26,16 @@
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Label Margin="4" Grid.Row="0" Grid.Column="0">Adres</Label>
                 <Label Margin="4" Grid.Row="1" Grid.Column="0">Waga</Label>
                 <Label Margin="4" Grid.Row="2" Grid.Column="0">Cena</Label>
+                <Label Margin="4" Grid.Row="3" Grid.Column="0">Kurier</Label>
                 <TextBox ToolTip="Wprowadź adres odbiorcy paczki" Name="Adres" Margin="4" Grid.Row="0" Grid.Column="1"/>
                 <TextBox ToolTip="Wprowadź wagę paczki" Name="Waga" Margin="4" Grid.Row="1" Grid.Column="1"/>
                 <TextBox ToolTip="Wprowadź cenę paczki" Name="Cena" Margin="4" Grid.Row="2" Grid.Column="1"/>
+                <TextBox ToolTip="Wprowadz nazwę kuriera" Name="Kurier" Margin="4" Grid.Row="4" Grid.Column="1"/>
             </Grid>
 
 

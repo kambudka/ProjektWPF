@@ -28,7 +28,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding Path=Adres}"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=Cena}"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Path=Cena, StringFormat=N2}" />
                 </Grid>
             </Border>
         </DataTemplate>
@@ -47,7 +47,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
-                    <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                    <TextBlock Text="{Binding AuthenticatedUser}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FocusManager.FocusedElement="{Binding ElementName=LoginBox}"
                FontSize="14" HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Bold"/>
                     <Grid Margin="4">
                         <Grid.ColumnDefinitions>
@@ -60,32 +60,38 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="Login:" ToolTip="Podaj swój login" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
                         <TextBlock Text="Hasło:" ToolTip="Podaj swoje hasło" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="4"/>
-                        <TextBox ToolTip="Wprowadź swój login" Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
+                        <TextBox x:Name="LoginBox" ToolTip="Wprowadź swój login" Text="{Binding Username}" Grid.Row="0" Grid.Column="1" Width="100" Margin="4" />
                         <PasswordBox ToolTip="Wprowadź swoje hasło" x:Name="passwordBox" Grid.Row="1" Grid.Column="1" Width="100" Margin="4"/>
                     </Grid>
                     <Button Name="Zaloguj" Content="Zaloguj" IsDefault="True" Command="{Binding LoginCommand, Mode=OneTime}" ToolTip="Zalogowanie się na konto" 
-                            CommandParameter="{Binding ElementName=passwordBox}" HorizontalAlignment="Center" Margin="2" Background="LightGray">
+                            CommandParameter="{Binding ElementName=passwordBox}" HorizontalAlignment="Center" Padding="4" Margin="2" Background="WhiteSmoke">
                         <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
+                            <EventTrigger RoutedEvent="Button.Click">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
-                                                            FillBehavior="Stop" 
-                                                            Duration="0:0:1"/>
+                                        <ColorAnimation To="LimeGreen"
+                                                        Storyboard.TargetName="Wyloguj"
+                                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                                        FillBehavior="Stop" 
+                                                        Duration="0:0:4"
+                                                        RepeatBehavior="0:0:12"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                         </Button.Triggers>
                     </Button>
                     <Button Name="Wyloguj" Content="Wyloguj" Command="{Binding LogoutCommand, Mode=OneTime}" ToolTip="Wylogowanie z konta"
-                            Visibility="{Binding IsAuthenticated}" HorizontalAlignment="Center" Margin="2" Background="LightGray">
+                            Visibility="{Binding IsAuthenticated}" HorizontalAlignment="Center" Padding="4" Margin="2" Background="WhiteSmoke">
                         <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.MouseEnter">
+                            <EventTrigger RoutedEvent="Button.Click">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                        <ColorAnimation To="LimeGreen"
+                                                        Storyboard.TargetName="Zaloguj"
+                                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
                                                         FillBehavior="Stop" 
-                                                        Duration="0:0:1"/>
+                                                        Duration="0:0:4"
+                                                        RepeatBehavior="0:0:12"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -182,14 +188,14 @@
                     <Label Grid.Row="1" Margin="3">Status:</Label>
                     <TextBox Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Status}"></TextBox>
                     <Label Grid.Row="2" Margin="3" >Adres:</Label>
-                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Adres}"/>
                     <Label Grid.Row="3" Margin="3">Cena:</Label>
                     <TextBox Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Cenaadd, ValidatesOnDataErrors=True, Converter={StaticResource CenaConverter}}" />
                     <Label Grid.Row="4" Margin="3" >Waga:</Label>
                     <TextBox Grid.Row="4" Grid.Column="1" Margin="3" Text="{Binding Path=Wagaadd, ValidatesOnDataErrors=True, Converter={StaticResource WagaConverter}}" />
                     <Label Grid.Row="5" Margin="3" >Numer:</Label>
                     <TextBox Grid.Row="5" Grid.Column="1" Margin="3" Text="{Binding Path=Numer}" />
-                    <TextBox Grid.Row="6" Grid.Column="1" Margin="3" TextWrapping="Wrap" ></TextBox>
+                    <TextBox Grid.Row="6" Grid.Column="1" Margin="3" TextWrapping="Wrap" Text="{Binding Path=DodatkoweInformacje}"></TextBox>
 
                 </Grid>
             </Grid>
@@ -294,7 +300,22 @@
                     </Grid>
                 </Grid>
                 <Grid Grid.Column="1" Grid.Row="5">
-                    <Button ToolTip="Drukowanie faktury, jeśli paczka o podanym numerze istnieje" Name="Drukuj" Margin="4" Click="Drukuj_Click" IsEnabled="False">Drukuj</Button>
+                    <Button ToolTip="Drukowanie faktury, jeśli paczka o podanym numerze istnieje" Name="Drukuj" Padding="3" Margin="4" IsEnabled="False" Click="Drukuj_Click" Background="WhiteSmoke">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="LimeGreen"
+                                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" 
+                                                        FillBehavior="Stop" 
+                                                        Duration="0:0:4"
+                                                        RepeatBehavior="0:0:12"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                        Drukuj
+                    </Button>
                 </Grid>
                 <Grid Grid.Column="1" Grid.Row="1" Margin="5" Style="{x:Null}">
                     <Border BorderThickness="1" BorderBrush="Black" Height="210" Width="150"></Border>
@@ -302,7 +323,7 @@
                         <Canvas.Resources>
                             <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                         </Canvas.Resources>
-                        <Label Canvas.Top="0"  FontSize="4" FontWeight="Bold" Content="KurierExpress" Foreground="Aquamarine"/>
+                        <Label Canvas.Top="0"  FontSize="4" FontWeight="Bold" Content="KurierExpress" Foreground="Red"/>
                         <Label Canvas.Top="10" FontSize="3" Content="Sprzedawca:" Style="{x:Null}"/>
                         <Label Canvas.Top="15" FontSize="3" Content="KurierExpress"/>
                         <Label Canvas.Top="20" FontSize="3" Content="ul. Wiejska 45A"/>
@@ -374,8 +395,6 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-
-
             </Grid>
         </TabItem>
     </TabControl>

@@ -15,7 +15,6 @@ using System.Security.Permissions;
 
 namespace ProjektWPF
 {
-    [PrincipalPermission(SecurityAction.Demand, Role = "Administrators")]
     public partial class Okno_Dodaj : Window, IView
     {
         public Okno_Dodaj()
@@ -42,7 +41,7 @@ namespace ProjektWPF
         public Paczka NowaPaczka;
         private void Ok_Click(object sender, RoutedEventArgs e)
         { 
-            NowaPaczka = new Paczka(Decimal.Parse(Cena.Text), Adres.Text, Decimal.Parse(Waga.Text));
+            NowaPaczka = new Paczka(Decimal.Parse(Cena.Text), Adres.Text, Decimal.Parse(Waga.Text),Kurier.Text);
             DialogResult = true;
             Close();
         }

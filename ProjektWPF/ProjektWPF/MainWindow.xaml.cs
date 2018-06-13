@@ -99,13 +99,13 @@ namespace ProjektWPF
             if (fakturaIloscPozycjiStalych == 0) fakturaIloscPozycjiStalych = Faktura.Children.Count;  //pierwsze wejscie
             else
             {
-                for(int i = Faktura.Children.Count-1; i >= fakturaIloscPozycjiStalych; i--)
+                for (int i = Faktura.Children.Count - 1; i >= fakturaIloscPozycjiStalych; i--)
                 {
                     Faktura.Children.RemoveAt(i);
                 }
             }
             int rozmiarCzcionki = 3;
-            Label data = new Label();                 
+            Label data = new Label();
             data.FontSize = rozmiarCzcionki;
             data.Content = DateTime.Today.ToString("d");
             Canvas.SetLeft(data, 120);
@@ -120,7 +120,7 @@ namespace ProjektWPF
             nr++;
             Label nabywca = new Label();
             nabywca.FontSize = rozmiarCzcionki;
-            nabywca.Content = "Gal Anonim";   // rodo i takie tam 
+            nabywca.Content = "Gal Anonim";
             Canvas.SetTop(nabywca, 15);
             Canvas.SetLeft(nabywca, 80);
             Faktura.Children.Add(nabywca);
@@ -141,16 +141,16 @@ namespace ProjektWPF
 
             Label wagaPaczki = new Label();
             wagaPaczki.FontSize = rozmiarCzcionki;
-            wagaPaczki.Content = znalezionaPaczka.Waga;
+            wagaPaczki.Content = Decimal.Round(znalezionaPaczka.Waga, 2).ToString() + " " + znalezionaPaczka.WagaJednostka;
             Canvas.SetTop(wagaPaczki, 70);
-            Canvas.SetLeft(wagaPaczki, 40);
+            Canvas.SetLeft(wagaPaczki, 35);
             Faktura.Children.Add(wagaPaczki);
 
             Label netto = new Label();
             netto.FontSize = rozmiarCzcionki;
-            netto.Content = znalezionaPaczka.Cena;
+            netto.Content = Decimal.Round(znalezionaPaczka.Cena, 2).ToString() + " " + znalezionaPaczka.CenaJednostka;
             Canvas.SetTop(netto, 70);
-            Canvas.SetLeft(netto, 55);
+            Canvas.SetLeft(netto, 50);
             Faktura.Children.Add(netto);
 
             Label vat = new Label();
@@ -162,9 +162,9 @@ namespace ProjektWPF
 
             Label vatKwota = new Label();
             decimal tempVat;
-            tempVat = znalezionaPaczka.Cena*(decimal)0.23;
+            tempVat = znalezionaPaczka.Cena * (decimal)0.23;
             vatKwota.FontSize = rozmiarCzcionki;
-            vatKwota.Content = Decimal.Round(tempVat, 2).ToString();
+            vatKwota.Content = Decimal.Round(tempVat, 2).ToString() + " " + znalezionaPaczka.CenaJednostka;
             Canvas.SetTop(vatKwota, 70);
             Canvas.SetLeft(vatKwota, 90);
             Faktura.Children.Add(vatKwota);
@@ -173,24 +173,33 @@ namespace ProjektWPF
             decimal tempBrutto;
             brutto.FontSize = rozmiarCzcionki;
             tempBrutto = tempVat + znalezionaPaczka.Cena;
-            brutto.Content = Decimal.Round(tempBrutto, 2).ToString();
+            brutto.Content = Decimal.Round(tempBrutto, 2).ToString() + " " + znalezionaPaczka.CenaJednostka;
             Canvas.SetTop(brutto, 70);
             Canvas.SetLeft(brutto, 110);
             Faktura.Children.Add(brutto);
 
             Label razem = new Label();
             razem.FontSize = rozmiarCzcionki;
-            razem.Content = Decimal.Round(tempBrutto, 2).ToString();
+            razem.Content = Decimal.Round(tempBrutto, 2).ToString() + " " + znalezionaPaczka.CenaJednostka;
             Canvas.SetTop(razem, 85);
             Canvas.SetLeft(razem, 110);
             Faktura.Children.Add(razem);
 
             Label calosc = new Label();
             calosc.FontSize = rozmiarCzcionki;
-            calosc.Content = Decimal.Round(tempBrutto, 2).ToString();
+            calosc.Content = Decimal.Round(tempBrutto, 2).ToString() + " " + znalezionaPaczka.CenaJednostka;
             Canvas.SetTop(calosc, 100);
             Canvas.SetLeft(calosc, 30);
             Faktura.Children.Add(calosc);
+        }
+
+        //[Drukowanie] przeładowanie podlągu wydruku, jeśli użytkownik zmienił preferencje i był podany nr paczki do wydruku
+        private void ZmienionoPreferencje()
+        {
+            if (NumerPrzesylki.Text != "")
+            {
+                GenerujFakture();
+            }
         }
 
         //[Paczki] Generowanie randomowego numeru dla nowej paczki.
@@ -533,6 +542,7 @@ namespace ProjektWPF
         }
         private void Filter(object sender, RoutedEventArgs e)
         {
+            SortujKuriera();
             decimal minimumPrice;
             if (Decimal.TryParse(txtMinPrice.Text, out minimumPrice))
             {
@@ -541,7 +551,13 @@ namespace ProjektWPF
                     Paczka product = item as Paczka;
                     if (product != null)
                     {
-                        return (product.Cena > minimumPrice);
+                        if (Thread.CurrentPrincipal.IsInRole("Kurier") == true)
+                        {
+                            if(product.Kurier == Thread.CurrentPrincipal.Identity.Name)
+                                return (product.Cena > minimumPrice);
+                        }
+                        else
+                            return (product.Cena > minimumPrice);
                     }
                     return false;
                 };

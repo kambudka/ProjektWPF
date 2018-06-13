@@ -14,11 +14,12 @@ namespace ProjektWPF
         {
             return Random.Next(3000) + 1000;
         }
-        public Paczka(decimal cena, string adres, decimal waga) //Konstruktor użytkowy, status i numer jest generowany
+        public Paczka(decimal cena, string adres, decimal waga,string kurier) //Konstruktor użytkowy, status i numer jest generowany
         {
             Cena = cena;
             Adres = adres;
             Waga = waga;
+            Kurier = kurier;
             Wagaadd = 'k' + Waga.ToString();
             Cenaadd = "p" + Cena.ToString();
             Status = "W magazynie"; //Po zatwierdzeniu paczki, składowana jest w magazynie
@@ -49,6 +50,9 @@ namespace ProjektWPF
         public string Cenaadd { get; set; }
         public string Wagaadd { get; set; }
 
+        public string CenaJednostka { get; set; }
+        public string WagaJednostka { get; set; }
+        public string DodatkoweInformacje { get; set; }
 
         public string Error
         {
